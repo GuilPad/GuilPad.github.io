@@ -100,21 +100,34 @@ function setupMobileControls(scene) {
     const btnRight = document.getElementById('btn-right');
     const btnDown = document.getElementById('btn-down');
 
+    function handleTouchStart(direction) {
+        return (e) => {
+            e.preventDefault(); // Empêche le comportement par défaut
+            scene.mobileControls[direction] = true;
+        };
+    }
+
+    function handleTouchEnd(direction) {
+        return (e) => {
+            e.preventDefault(); // Empêche le comportement par défaut
+            scene.mobileControls[direction] = false;
+        };
+    }
     // Initialise les états des boutons tactiles
     scene.mobileControls = { up: false, down: false, left: false, right: false };
 
     // Ajoute les écouteurs d'événements pour gérer les mouvements
-    btnUp.addEventListener('touchstart', () => (scene.mobileControls.up = true));
-    btnUp.addEventListener('touchend', () => (scene.mobileControls.up = false));
+    btnUp.addEventListener('touchstart', handleTouchStart('up'));
+    btnUp.addEventListener('touchend', handleTouchEnd('up'));
 
-    btnLeft.addEventListener('touchstart', () => (scene.mobileControls.left = true));
-    btnLeft.addEventListener('touchend', () => (scene.mobileControls.left = false));
+    btnLeft.addEventListener('touchstart', handleTouchStart('left'));
+    btnLeft.addEventListener('touchend', handleTouchEnd('left'));
 
-    btnRight.addEventListener('touchstart', () => (scene.mobileControls.right = true));
-    btnRight.addEventListener('touchend', () => (scene.mobileControls.right = false));
+    btnRight.addEventListener('touchstart', handleTouchStart('right'));
+    btnRight.addEventListener('touchend', handleTouchEnd('right'));
 
-    btnDown.addEventListener('touchstart', () => (scene.mobileControls.down = true));
-    btnDown.addEventListener('touchend', () => (scene.mobileControls.down = false));
+    btnDown.addEventListener('touchstart', handleTouchStart('down'));
+    btnDown.addEventListener('touchend', handleTouchEnd('down'));
 }
 function create() {
     const map = this.make.tilemap({ key: 'map' });
