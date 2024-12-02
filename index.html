@@ -76,9 +76,9 @@
         let currentPanel;
         function preload() {
     // Charger le fichier JSON de la carte et l'image du tileset
-    this.load.tilemapTiledJSON('map', 'assets/map.json');
-    this.load.image('tiles', 'assets/Village.png'); // Correspond au chemin modifié dans le JSON
-    this.load.spritesheet('player', 'assets/player.png', { frameWidth: 16, frameHeight: 24 }); // Sprite du joueur
+    this.load.tilemapTiledJSON('map', './assets/map.json');
+    this.load.image('tiles', './assets/Village.png'); // Correspond au chemin modifié dans le JSON
+    this.load.spritesheet('player', './assets/player.png', { frameWidth: 16, frameHeight: 24 }); // Sprite du joueur
 }
 window.addEventListener('beforeunload', function() {
     const position = {
