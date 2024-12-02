@@ -42,6 +42,13 @@
 </head>
 <body>
     <div>
+        <div id="mobile-controls" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: none; z-index: 10;">
+            <button id="btn-up" style="width: 50px; height: 50px; margin-bottom: 5px;">⬆️</button><br>
+            <button id="btn-left" style="width: 50px; height: 50px; margin-right: 5px;">⬅️</button>
+            <button id="btn-right" style="width: 50px; height: 50px; margin-left: 5px;">➡️</button>
+            <button id="btn-down" style="width: 50px; height: 50px; margin-top: 5px;">⬇️</button>
+        </div>
+
     <div id="gameContainer"></div>
     <div id="infoBox">Utiliser les touches directionnelles pour se déplacer et ENTREE pour interagir avec les panneaux.</div></div>
 
@@ -87,6 +94,28 @@ window.addEventListener('beforeunload', function() {
     };
     localStorage.setItem('playerPosition', JSON.stringify(position));
 });
+function setupMobileControls(scene) {
+    const btnUp = document.getElementById('btn-up');
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+    const btnDown = document.getElementById('btn-down');
+
+    // Initialise les états des boutons tactiles
+    scene.mobileControls = { up: false, down: false, left: false, right: false };
+
+    // Ajoute les écouteurs d'événements pour gérer les mouvements
+    btnUp.addEventListener('touchstart', () => (scene.mobileControls.up = true));
+    btnUp.addEventListener('touchend', () => (scene.mobileControls.up = false));
+
+    btnLeft.addEventListener('touchstart', () => (scene.mobileControls.left = true));
+    btnLeft.addEventListener('touchend', () => (scene.mobileControls.left = false));
+
+    btnRight.addEventListener('touchstart', () => (scene.mobileControls.right = true));
+    btnRight.addEventListener('touchend', () => (scene.mobileControls.right = false));
+
+    btnDown.addEventListener('touchstart', () => (scene.mobileControls.down = true));
+    btnDown.addEventListener('touchend', () => (scene.mobileControls.down = false));
+}
 function create() {
     const map = this.make.tilemap({ key: 'map' });
     const tileset = map.addTilesetImage('Village', 'tiles'); // Assurez-vous que le nom correspond à celui du JSON
@@ -133,13 +162,23 @@ player.setSize(15, 15);
     frameRate: 4,
     repeat: -1 // Répète indéfiniment
 });
-this.cameras.main.startFollow(player);
+const mapWidth = map.widthInPixels;
+    const mapHeight = map.heightInPixels;
 
-    // Définir les limites de la caméra pour qu'elle ne dépasse pas la carte
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    console.log("Dimensions de la carte :", mapWidth, mapHeight);
 
-    // Définir les limites du monde pour que le joueur ne sorte pas de la carte
-    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    // Définir les limites de la caméra et du monde
+    if (isMobile()) {
+        console.log("Mode mobile : la caméra suit sur les deux axes");
+        this.cameras.main.setBounds(-1000, -1000, mapWidth*3, mapHeight*3);
+        this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
+        this.cameras.main.startFollow(player, true, 1, 1); // Suit X et Y
+    } else {
+        console.log("Mode PC : la caméra suit uniquement sur Y");
+        this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
+        this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
+        this.cameras.main.startFollow(player, true, 1, 1); // Suit uniquement Y
+    }
 // Animation d'idle (quatre sprites de la deuxième ligne)
 this.anims.create({
     key: 'idle',
@@ -213,69 +252,67 @@ this.input.keyboard.on('keydown-ENTER', () => {
         console.log('Aucun panneau lisible trouvé ou trop loin');
     }
 });
-            
-
-            // Configurer les contrôles du clavier
-            cursors = this.input.keyboard.createCursorKeys();
-    // Vérifier si le joueur est près de la porte
     this.portes.children.each((porte) => {
         if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), porte.getBounds())) {
             nearDoor = true;
             // Afficher une indication d'interaction (facultatif)
             console.log("Appuyez sur la touche Haut pour entrer.");
         }
-    });
+    });            
+
+const mobileControls = document.getElementById('mobile-controls');
+if (isMobile()) {
+        setupMobileControls(this);
+        document.getElementById('mobile-controls').style.display = 'block'; // Affiche les boutons tactiles
+    } else {
+        cursors = this.input.keyboard.createCursorKeys(); // Configure les touches du clavier
+        document.getElementById('mobile-controls').style.display = 'none'; // Cache les boutons tactiles sur PC
+    }
+    // Vérifier si le joueur est près de la porte
+
 }
 function update() {
-    let nearDoor = false;
+    let nearDoor = false; // Réinitialise à chaque frame
+    let interactingWithDoor = null;
 
+    // Interaction avec une porte si proche et flèche "haut" activée
+    if (nearDoor && cursors.up.isDown && interactingWithDoor?.url) {
+        console.log("Entrer dans la porte :", interactingWithDoor.url);
+        window.location.href = interactingWithDoor.url; // Redirection vers l'URL de la porte
+        return; // Évite d'exécuter d'autres logiques pendant l'interaction
+    }
 
+    // Logique de mouvement
+    player.setVelocity(0); // Réinitialise la vitesse du joueur
 
-    if (nearDoor && cursors.up.isDown) {
-        // Logique d'interaction avec la porte
-        console.log("Entrer dans la porte");
-        
-        // Rediriger vers une autre page
-        window.location.href = porte.url; // Remplacez par l'URL souhaitée
-    } else {
-        // Logique de mouvement par défaut
-        if (cursors.left.isDown) {
-        player.setVelocityX(-160);
-        player.setVelocityY(0);
+    // Vérifie les contrôles tactiles en priorité
+    if (isMobile() && this.mobileControls) {
+        if (this.mobileControls.up) player.setVelocityY(-160);
+        if (this.mobileControls.down) player.setVelocityY(160);
+        if (this.mobileControls.left) player.setVelocityX(-160);
+        if (this.mobileControls.right) player.setVelocityX(160);
+    } else if (cursors) {
+        // Si aucun contrôle tactile actif, utilise les touches clavier
+        if (cursors.left.isDown) player.setVelocityX(-160);
+        if (cursors.right.isDown) player.setVelocityX(160);
+        if (cursors.up.isDown) player.setVelocityY(-160);
+        if (cursors.down.isDown) player.setVelocityY(160);
+    }
+
+    // Gère les animations
+    if (player.body.velocity.x < 0) {
         player.anims.play('walk', true);
         player.scaleX = -1.5;
-
-        // Ajuster l'offset de la hitbox pour le déplacement à gauche
-        player.body.setOffset(player.body.width / 2, 4); // Ajuster le décalage vertical
-    } else if (cursors.right.isDown) {
-        player.setVelocityX(160);
-        player.setVelocityY(0);
+        player.body.setOffset(player.body.width / 2, 4);
+    }
+    else if (player.body.velocity.x !== 0 || player.body.velocity.y !== 0) {
         player.anims.play('walk', true);
         player.scaleX = 1.5;
-
-        // Réinitialiser l'offset de la hitbox pour le déplacement à droite
-        player.body.setOffset(0, 4); // Ajuster le décalage vertical
-    } else if (cursors.down.isDown) {
-        player.setVelocityX(0);
-        player.setVelocityY(160);
-        player.anims.play('walk', true);
-        player.scaleX = 1.5;
-        player.body.setOffset(0, 4); // Ajuster le décalage vertical
-    } else if (cursors.up.isDown) {
-        player.setVelocityX(0);
-        player.setVelocityY(-160);
-        player.anims.play('walk', true);
-        player.scaleX = 1.5;
-        
-        player.body.setOffset(0, 4); // Ajuster le décalage vertical
+        player.body.setOffset(-player.body.width / 4, 4);
     } else {
-        // Réinitialiser l'offset de la hitbox lorsque le personnage s'arrête
-        player.setVelocityX(0);
-        player.setVelocityY(0);
         player.anims.play('idle', true);
-        player.setOrigin(0, 0.5);
-    }}
-        }
+    }
+}
 
         function displayMessage(scene, message) {
     console.log(message);
@@ -325,6 +362,9 @@ function update() {
     // Détruire le texte temporaire après utilisation
     tempText.destroy();
 }
+function isMobile() {
+        return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    }
     </script>
 </body>
 </html>
