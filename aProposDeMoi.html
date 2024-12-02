@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu RPG Phaser</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #87CEEB; /* Couleur de fond, peut être remplacée par une image */
+        }
+
+        #gameContainer {
+            display: block;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+        canvas {
+            border: 1px solid #000; /* Optionnel : ajoute une bordure autour du canvas */
+        }
+        #infoBox {
+    margin-top: 10px; /* Espace entre le canvas et le div */
+    text-align: center; /* Centrer le texte ou le contenu */
+    padding: 10px; /* Espacement interne */
+    background-color: #62b6b6; /* Couleur de fond */
+    border: 1px solid #30756a; /* Bordure */
+}
+        @font-face {
+    font-family: 'Pixelmax';
+    src: url('fonts/Pixelmax.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+    </style>
+</head>
+<body>
+    <div>
+    <div id="gameContainer"></div>
+    <div id="infoBox">Utiliser les touches directionnelles pour se déplacer et ENTREE pour interagir avec les panneaux.</div></div>
+
+    <script>
+        // Initialisation de Phaser
+        const config = {
+            type: Phaser.AUTO,
+            width: 720,
+            height: 720,
+            parent: 'gameContainer',
+            render: {
+        pixelArt: true // Active le mode pixelArt, utile pour les jeux en pixel art
+    },
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 0 },
+                    debug: true,
+                    roundPixels: true
+                }
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        const game = new Phaser.Game(config);
+        let player;
+        let cursors;
+        let currentPanel;
+        function preload() {
+    // Charger le fichier JSON de la carte et l'image du tileset
+    this.load.tilemapTiledJSON('map', 'assets/interieur.json');
+    this.load.image('tiles', 'assets/interieur.png'); // Correspond au chemin modifié dans le JSON
+    this.load.spritesheet('player', 'assets/player.png', { frameWidth: 16, frameHeight: 24 }); // Sprite du joueur
+}
+window.addEventListener('beforeunload', function() {
+    const position = {
+        x: player.x,
+        y: player.y
+    };
+    localStorage.setItem('playerPosition', JSON.stringify(position));
+});
+function create() {
+    const map = this.make.tilemap({ key: 'map' });
+    const tileset = map.addTilesetImage('libassetpack-tiled', 'tiles');
+
+    // Créer les couches
+const groundLayer = map.createLayer('Sol', tileset, 0, 0);
+const niveauLayer = map.createLayer('Mur', tileset, 0, 0);
+const Items1Layer = map.createLayer('Objets1', tileset, 0, 0);
+const Items2Layer = map.createLayer('Objets2', tileset, 0, 0);
+const Items3Layer = map.createLayer('Objets3', tileset, 0, 0);
+groundLayer.setCollisionByProperty({ collision: true });
+niveauLayer.setCollisionByProperty({ collision: true });
+Items1Layer.setCollisionByProperty({ collision: true });
+Items2Layer.setCollisionByProperty({ collision: true });
+Items3Layer.setCollisionByProperty({ collision: true });
+groundLayer.setCollisionFromCollisionGroup(true, true);
+niveauLayer.setCollisionFromCollisionGroup(true, true);
+Items1Layer.setCollisionFromCollisionGroup(true, true);
+Items2Layer.setCollisionFromCollisionGroup(true, true);
+Items3Layer.setCollisionFromCollisionGroup(true, true);
+this.panneaux = this.physics.add.group({
+        allowGravity: false,
+        immovable: true
+    });
+    this.portes = this.physics.add.group({
+        allowGravity: false,
+        immovable: true
+    });
+    const savedPosition = localStorage.getItem('playerPosition');
+    if (savedPosition) {
+        const position = JSON.parse(savedPosition);
+        player = this.physics.add.sprite(position.x, position.y, 'player');
+    } else {
+        // Position par défaut si aucune position n'est sauvegardée
+        player = this.physics.add.sprite(650, 1220, 'player');
+    }
+
+    // Autres configurations du joueur, si nécessaire
+    player.setCollideWorldBounds(true);
+
+player.setScale(1.5);
+player.setSize(15, 15);
+    player.setCollideWorldBounds(true);
+    this.physics.add.collider(player, groundLayer);
+    this.physics.add.collider(player, niveauLayer);
+    this.physics.add.collider(player, Items1Layer);
+    this.physics.add.collider(player, Items2Layer);
+    this.physics.add.collider(player, Items3Layer);
+    this.anims.create({
+    key: 'rest',
+    frames: [{ key: 'player', frame: 0 }],
+    frameRate: 4,
+    repeat: -1 // Répète indéfiniment
+});
+this.cameras.main.startFollow(player);
+
+    // Définir les limites de la caméra pour qu'elle ne dépasse pas la carte
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
+    // Définir les limites du monde pour que le joueur ne sorte pas de la carte
+    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+// Animation d'idle (quatre sprites de la deuxième ligne)
+this.anims.create({
+    key: 'idle',
+    frames: this.anims.generateFrameNumbers('player', { start: 4, end: 7 }),
+    frameRate: 4,
+    repeat: -1 // Répète indéfiniment
+});
+
+// Animation de déplacement à droite (quatre sprites de la troisième ligne)
+this.anims.create({
+    key: 'walk',
+    frames: this.anims.generateFrameNumbers('player', { start: 8, end: 11 }),
+    frameRate: 4,
+    repeat: -1 // Répète indéfiniment
+});
+
+map.getObjectLayer('Bibliotheque').objects.forEach((object, index) => {
+    console.log(`Objet ${index} - Nom: ${object.name}, Coordonnées: (${object.x}, ${object.y})`);
+    
+    if (object.name === 'Panneau') {
+        // Créer un sprite invisible pour gérer la détection
+        const panneau = this.panneaux.create(object.x, object.y - object.height, null).setOrigin(0, -0.3);
+        panneau.setSize(object.width, object.height);
+        panneau.setScale(1.8);
+
+        // Rechercher dynamiquement la propriété de message
+        const messageProperty = object.properties.find(prop => prop.name.startsWith('message'));
+        panneau.message = messageProperty ? messageProperty.value : 'Aucun message';
+        
+        console.log(`Panneau détecté - Message: ${panneau.message}`);
+
+        panneau.lisible = object.properties.find(prop => prop.name === 'interaction')?.value || false;
+        panneau.setVisible(false);
+    }
+    if (object.name === 'Porte') {
+        // Créer un sprite invisible pour gérer la détection
+        const porte = this.portes.create(object.x, object.y - object.height, null).setOrigin(0, -1);
+        porte.setSize(object.width, object.height);
+
+        // Rechercher dynamiquement la propriété de message
+        const pageProperty = object.properties.find(prop => prop.name.startsWith('page'));
+        porte.page = pageProperty ? pageProperty.value : 'Aucun message';
+        
+        console.log(`porte détecté - Message: ${porte.message}`);
+
+        porte.url = object.properties.find(prop => prop.name === 'passage')?.value || false;
+        porte.setVisible(false);
+    }
+});
+this.physics.add.overlap(player, this.portes, (player, porte) => {
+        if (cursors.down.isDown && porte.url) {
+            // Rediriger vers l'URL associée
+            window.location.href = porte.page;
+        }
+    });
+// Ajoutez un écouteur d'événements pour la touche 'entrée'
+this.input.keyboard.on('keydown-ENTER', () => {
+    let panneauProche = null;
+
+    this.panneaux.getChildren().forEach((panneau) => {
+        const distance = Phaser.Math.Distance.Between(player.x, player.y, panneau.x, panneau.y);
+        if (distance < 100) { // Ajustez la distance selon vos besoins
+            panneauProche = panneau;
+            console.log("distance:"+distance);
+        }
+    });
+
+    if (panneauProche && panneauProche.lisible) {
+        displayMessage(this, panneauProche.message); // Passez la scène comme paramètre
+    } else {
+        console.log('Aucun panneau lisible trouvé ou trop loin');
+    }
+});
+            
+
+            // Configurer les contrôles du clavier
+            cursors = this.input.keyboard.createCursorKeys();
+    // Vérifier si le joueur est près de la porte
+    this.portes.children.each((porte) => {
+        if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), porte.getBounds())) {
+            nearDoor = true;
+            // Afficher une indication d'interaction (facultatif)
+            console.log("Appuyez sur la touche Haut pour entrer.");
+        }
+    });
+}
+function update() {
+    let nearDoor = false;
+
+
+
+    if (nearDoor && cursors.up.isDown) {
+        // Logique d'interaction avec la porte
+        console.log("Entrer dans la porte");
+        
+        // Rediriger vers une autre page
+        window.location.href = porte.url; // Remplacez par l'URL souhaitée
+    } else {
+        // Logique de mouvement par défaut
+        if (cursors.left.isDown) {
+        player.setVelocityX(-160);
+        player.setVelocityY(0);
+        player.anims.play('walk', true);
+        player.scaleX = -1.5;
+
+        // Ajuster l'offset de la hitbox pour le déplacement à gauche
+        player.body.setOffset(player.body.width / 2, 4); // Ajuster le décalage vertical
+    } else if (cursors.right.isDown) {
+        player.setVelocityX(160);
+        player.setVelocityY(0);
+        player.anims.play('walk', true);
+        player.scaleX = 1.5;
+
+        // Réinitialiser l'offset de la hitbox pour le déplacement à droite
+        player.body.setOffset(0, 4); // Ajuster le décalage vertical
+    } else if (cursors.down.isDown) {
+        player.setVelocityX(0);
+        player.setVelocityY(160);
+        player.anims.play('walk', true);
+        player.scaleX = 1.5;
+        player.body.setOffset(0, 4); // Ajuster le décalage vertical
+    } else if (cursors.up.isDown) {
+        player.setVelocityX(0);
+        player.setVelocityY(-160);
+        player.anims.play('walk', true);
+        player.scaleX = 1.5;
+        
+        player.body.setOffset(0, 4); // Ajuster le décalage vertical
+    } else {
+        // Réinitialiser l'offset de la hitbox lorsque le personnage s'arrête
+        player.setVelocityX(0);
+        player.setVelocityY(0);
+        player.anims.play('idle', true);
+        player.setOrigin(0, 0.5);
+    }}
+        }
+
+        function displayMessage(scene, message) {
+    console.log(message);
+    const uiLayer = scene.add.container(scene.cameras.main.width / 2, scene.cameras.main.height / 2);
+
+    // Créer un texte temporaire pour mesurer la taille du message
+    const tempText = scene.add.text(0, 0, message, {
+        font: '16px Pixelmax',
+        fill: '#000000',
+        wordWrap: { width: 400 } // Largeur maximale pour le texte
+    }).setVisible(false);
+
+    // Obtenir les dimensions du texte et ajuster la taille du cadre
+    const textWidth = tempText.width;
+    const textHeight = tempText.height;
+    const padding = 20;
+    const rectWidth = textWidth + padding * 2;
+    const rectHeight = textHeight + padding * 2;
+
+    // Créer un graphique pour la boîte de fond
+    const graphics = scene.add.graphics();
+    graphics.lineStyle(20, 0x8B4513, 1); // Couleur du contour (marron)
+    graphics.fillStyle(0xF5F5DC, 1); // Couleur de fond (beige)
+    graphics.strokeRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight);
+    graphics.fillRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight);
+
+    // Ajouter le graphique au conteneur
+    uiLayer.add(graphics);
+
+    // Créer le texte et l'ajouter au conteneur
+    const text = scene.add.text(0, 0, message, {
+        font: '16px Pixelmax',
+        fill: '#000000', // Couleur du texte (noir)
+        wordWrap: { width: rectWidth - padding } // Ajuster la marge intérieure
+    }).setOrigin(0.5);
+    
+    uiLayer.add(text);
+
+    // Fixer le conteneur à la caméra pour qu'il reste centré à l'écran
+    uiLayer.setScrollFactor(0);
+
+    // Masquer après un délai
+    scene.time.delayedCall(3000, () => {
+        uiLayer.destroy();
+    });
+
+    // Détruire le texte temporaire après utilisation
+    tempText.destroy();
+}
+    </script>
+</body>
+</html>
