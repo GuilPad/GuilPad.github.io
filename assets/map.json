@@ -263,7 +263,7 @@
                         {
                          "name":"passage",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }],
                  "rotation":0,
                  "visible":true,
@@ -302,7 +302,7 @@
                         {
                          "name":"page5",
                          "type":"string",
-                         "value":"data.html"
+                         "value":"notebook.html"
                         }, 
                         {
                          "name":"passage",
@@ -324,7 +324,7 @@
                         {
                          "name":"page6",
                          "type":"string",
-                         "value":"autre.html"
+                         "value":"projetWagon.html"
                         }, 
                         {
                          "name":"passage",
