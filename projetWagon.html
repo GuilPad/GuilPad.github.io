@@ -48,7 +48,7 @@
         }
 
         .container {
-            text-align: center;
+            text-align: left;
             padding: 20px;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 15px;
@@ -65,10 +65,15 @@
             margin-bottom: 20px;
         }
 
+        h1 {
+            text-align: center;
+        }
+        
         p {
             font-size: 1.2em;
             line-height: 1.5;
             margin-top: 10px;
+            text-indent: 2em; /* Ajoute une tabulation en début de paragraphe */
         }
 
         @media (max-width: 768px) {
@@ -86,14 +91,21 @@
         </a>
     </div>
     <header>
-        <h1>Vidéo Explicative</h1>
+        <h1>Projet de Fin de Formation - Text2Play</h1>
     </header>
     <div class="container">
         <video controls>
             <source src="video/Le Wagon Online _ Text2Play _ Batch _1621.mp4" type="video/mp4">
-            Votre navigateur ne supporte pas la lecture de vidéos.
         </video>
-        <p>Cette vidéo présente la démonstration de mon projet réalisée lors de ma formation. Prenez le temps de la regarder pour mieux comprendre les fonctionnalités et le travail accompli.</p>
+        <p> Cette vidéo montre le projet de fin de formation créé par mon groupe. Seule une personne pouvait présenter. C'est pourquoi mon collègue Jeff, à l'origine de l'idée du projet, s'en est chargé. Pour me voir présenter, la maison à l'ouest d'ici me montre présenter mon projet de fin de formation en développement web.</p>
+        <p> Text2Play est un projet ayant l'apparence d'un jeu qui modifie un asset pour l'associer à une envie de son utilisateur, utilisant des peintures comme dataset. Le jeu utilise le même framework que mon portfolio, Phaser, mais l'associe à deux modèles.</p>
+        <p> Le premier lit un prompt, réduit les mots à leur minimum (par exemple, les déterminants n'ont pas de valeur de sens, "tu marches" et "que nous marchassions" sont le même verbe "marcher", etc.) puis convertit les mots restants dans des valeurs compréhensibles par les machines.</p>
+        <p> Nous avons réussi à obtenir un dataset de peinture avec des descriptions associés. En se basant sur le prompt, la peinture la plus proche en terme de sens était sélectionnée.</p>
+        <p> Enfin, nous avons utilsé un modèle pour réaliser un transfert de style, afin de donner un nouvel aspect au background.</p>
+        <p> Ma participation dans ce projet a été la conception de la partie Phaser, le nettoyage des descriptions pour retirer le superflu ou le transformer dans sa forme la plus simple, ainsi que la création du transfert de style, que ce soit le modèle utilisé qui a dû être changé car celui d'origine, bien que très performant, avait aussi beaucoup de crash, ainsi que le paramétrage. Ayant le modèle final avant la fin du projet, j'ai pu également fournir l'intégralité des résultats présents dans la vidéo, y compris le portrait transformé de mes collègues et de Happy le chat.</p>
+        <p> D'autres éléments de ma part n'ont pas été retenu. Par exemple, le personnage est une image en format png, qui possède une valeur alpha que les jpg n'ont pas, leur permettant d'avoir des zones transparentes ou semi-transparentes. Avec des jpg, tous les assets comme le personnage, auraient eu une forme rectangulaire opaque avec le personnage en plein milieu.</p>
+        <p>Le problème est que le transfert de style créait des images sans transparence, ruinant l'aspect du jeu. L'idée que j'ai eu et que j'ai réussi à appliquer était d'utiliser le modèle d'origine, dans lequel des zones avaient un alpha à 0 pour signifier que la zone correspondante du résultat était invisible. Utilisant cette valeur, j'ai pu appliquer l'image d'origine en tant que calque par dessus le résultat, préalablement converti en png dont tous les alphas étaient à 255 par défaut, pour "découper autour" (ou plutôt modifier la valeur alpha sur les zones qui se superposaient avec les alphas=0 de l'image d'origine).</p>
+        <p>Bien que fonctionnel, les résultats fournissaient des résultats trop transformés et un paramétrage plus faible ne permettait pas de voir de changements suffisants pour le background. Il a donc été décidé de se concentrer sur l'image de fond uniquement.</p>
     </div>
 </body>
 </html>
