@@ -21,7 +21,7 @@
                         {
                          "name":"message2",
                          "type":"string",
-                         "value":"Visionner le projet final de ma formation, pr\u00e9sent\u00e9 par mon camarade (une seule personne \u00e9tait autoris\u00e9 \u00e0 parler pour le groupe)."
+                         "value":"Acc\u00e9der \u00e0 certains de mes notebooks, r\u00e9alis\u00e9s lors de ma formation."
                         }],
                  "rotation":0,
                  "visible":true,
@@ -43,7 +43,7 @@
                         {
                          "name":"message3",
                          "type":"string",
-                         "value":"Acc\u00e9der \u00e0 certains de mes notebooks, r\u00e9alis\u00e9s lors de ma formation."
+                         "value":"Visionner le projet final de ma formation."
                         }],
                  "rotation":0,
                  "visible":true,
