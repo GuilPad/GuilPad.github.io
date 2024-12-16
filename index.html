@@ -138,8 +138,8 @@ musicButton.addEventListener('click', () => {
             height: heightScreen,
             parent: 'gameContainer',
             scale: {
-        mode: Phaser.Scale.FIT, // Ajuste le canvas pour qu'il s'adapte à l'écran
-        autoCenter: Phaser.Scale.CENTER_BOTH // Centre automatiquement le canvas
+        mode: Phaser.Scale.FIT, 
+        autoCenter: Phaser.Scale.CENTER_BOTH 
     },
             render: {
                 
@@ -149,6 +149,7 @@ musicButton.addEventListener('click', () => {
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 0 },
+                    fps: 30,
                     roundPixels: true
                 }
             },
