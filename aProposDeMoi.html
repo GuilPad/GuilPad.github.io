@@ -236,7 +236,14 @@ function create() {
     console.log("create called");
     const map = this.make.tilemap({ key: 'map' });
     const tileset = map.addTilesetImage('libassetpack-tiled', 'tiles');
-
+    const mobileControls = document.getElementById('mobile-controls');
+    if (isMobile()) {
+        setupMobileControls(this);
+        document.getElementById('mobile-controls').style.display = 'block'; // Affiche les boutons tactiles
+    } else {
+        cursors = this.input.keyboard.createCursorKeys(); // Configure les touches du clavier
+        document.getElementById('mobile-controls').style.display = 'none'; // Cache les boutons tactiles sur PC
+    }
     // Créer les couches
 const groundLayer = map.createLayer('Sol', tileset, 0, 0);
 const niveauLayer = map.createLayer('Mur', tileset, 0, 0);
@@ -363,9 +370,10 @@ map.getObjectLayer('Bibliotheque').objects.forEach((object, index) => {
     }
 });
 this.physics.add.overlap(player, this.portes, (player, porte) => {
-        if (cursors.down.isDown && porte.url) {
+        if ((cursors.down.isDown || this.mobileControls?.down) && porte.url) {
             // Rediriger vers l'URL associée
             window.location.href = porte.page;
+            console.log('a');
         }
     });
 // Ajoutez un écouteur d'événements pour la touche 'entrée'
@@ -394,30 +402,10 @@ function interactionAvecBibliotheque() {
             // Configurer les contrôles du clavier
             cursors = this.input.keyboard.createCursorKeys();
     // Vérifier si le joueur est près de la porte
-
-
-const mobileControls = document.getElementById('mobile-controls');
-    if (isMobile()) {
-        setupMobileControls(this);
-        document.getElementById('mobile-controls').style.display = 'block'; // Affiche les boutons tactiles
-    } else {
-        cursors = this.input.keyboard.createCursorKeys(); // Configure les touches du clavier
-        document.getElementById('mobile-controls').style.display = 'none'; // Cache les boutons tactiles sur PC
-    }
 }
 
 
 function update() {
-    let nearDoor = false;
-
-    if (nearDoor && (cursors.up.isDown|| mobileControls?.down)) {
-        // Logique d'interaction avec la porte
-        console.log("Entrer dans la porte");
-        
-        // Rediriger vers une autre page
-        window.location.href = porte.url; // Remplacez par l'URL souhaitée
-    }
-
     player.setVelocity(0); // Réinitialise la vitesse du joueur
 
     // Priorité aux contrôles tactiles
