@@ -14,8 +14,20 @@
             align-items: center;
             height: 100vh;
             background-color: #87CEEB; /* Couleur de fond, peut être remplacée par une image */
+            font-family: 'Pixelmax', Arial, sans-serif;
+            overflow: hidden;
         }
-
+        #music-icon {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+        }
+        #music-icon img {
+    width: 64px; /* Ajustez cette valeur pour agrandir ou réduire */
+    height: 64px; /* Ajustez cette valeur pour garder les proportions */
+    cursor: pointer; /* Ajoute un curseur pour indiquer que l'icône est cliquable */
+}
         #gameContainer {
             display: block;
             justify-content: center;
@@ -24,6 +36,7 @@
         }
         canvas {
             border: 1px solid #000; /* Optionnel : ajoute une bordure autour du canvas */
+            display: block;
         }
         #infoBox {
     margin-top: 10px; /* Espace entre le canvas et le div */
@@ -32,41 +45,110 @@
     background-color: #62b6b6; /* Couleur de fond */
     border: 1px solid #30756a; /* Bordure */
 }
-        @font-face {
+#accueilMobile {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 500px;
+    background: #F5F5DC;
+    border: 2px solid #333;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+@font-face {
     font-family: 'Pixelmax';
     src: url('fonts/Pixelmax.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
 }
+@media (max-width: 768px) {
+        #gameContainer {
+            height: 100vh; /* Sur mobile, le canvas occupe tout l'écran */
+            overflow: hidden;
+        }}
     </style>
 </head>
 <body>
+    <div id="music-icon">
+        <img id="mute-button" src="./assets/mute.png" alt="Mute Button">
+    </div>
+    <audio id="audio-player" src="./musique/music.mp3" loop></audio>
+    <div id="accueilMobile" style="display: none;">
+        <p>Bienvenue sur mon portfolio. Si vous lisez ce message, c'est que vous utilisez la version mobile. Des flèches vous sont mises à disposition pour vous déplacer. Le bouton '?' vous permet d'interagir avec votre environnement. Enfin, le bouton 🎼 vous permet d'écouter la musique du jeu.</p>
+        <button class='close-window' onclick="closeWindow()">Fermer</button>
+    </div>
     <div>
         <div id="mobile-controls" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: none; z-index: 10;">
-            <button id="btn-up" style="width: 50px; height: 50px; margin-bottom: 5px;">⬆️</button><br>
-            <button id="btn-left" style="width: 50px; height: 50px; margin-right: 5px;">⬅️</button>
-            <button id="btn-right" style="width: 50px; height: 50px; margin-left: 5px;">➡️</button>
+            <button id="btn-music" style="width: 50px; height: 50px; margin-bottom: 5px;">🎼</button>
+            <button id="btn-up" style="width: 50px; height: 50px; margin-bottom: 5px;">⬆️</button>
+            <button id="interaction" style="width: 50px; height: 50px; margin-bottom: 5px;">?</button>
+            <br>
+            <button id="btn-left" style="width: 50px; height: 50px; margin-top: 5px;">⬅️</button>
             <button id="btn-down" style="width: 50px; height: 50px; margin-top: 5px;">⬇️</button>
+            <button id="btn-right" style="width: 50px; height: 50px; margin-top: 5px;">➡️</button>
         </div>
-
-    <div id="gameContainer"></div>
-    <div id="infoBox">Utiliser les touches directionnelles pour se déplacer et ENTREE pour interagir avec les panneaux.</div></div>
+    
+    <div id="gameContainer" style="margin: 0; padding: 0; width: 100%; height: 100%;"></div>
+    <div id="infoBox">Utiliser les touches directionnelles pour se déplacer et ENTREE pour interagir avec les panneaux ou les personnages.</div></div>
 
     <script>
+    // Sélectionner les éléments nécessaires
+const muteButton = document.getElementById('mute-button');
+const audioPlayer = document.getElementById('audio-player');
+const btnInteraction = document.getElementById('interaction');
+let widthScreen=1200;
+let heightScreen=800;
+let npcs;
+if(isMobile()) {
+    widthScreen=window.innerWidth;
+    heightScreen=window.innerHeight;
+} else {
+    widthScreen=1200;
+    heightScreen=800;
+}
+// Ajouter un gestionnaire d'événements pour le clic sur l'image
+muteButton.addEventListener('click', () => {
+    if (audioPlayer.paused) {
+        // Si la musique est en pause, on la joue et on change l'image
+        audioPlayer.play();
+        muteButton.src = './assets/son.png';
+    } else {
+        // Si la musique est en train de jouer, on la met en pause et on change l'image
+        audioPlayer.pause();
+        muteButton.src = './assets/mute.png';
+    }
+});
+// Sélectionner les éléments nécessaires
+const musicButton = document.getElementById('btn-music');
+// Ajouter un gestionnaire d'événements pour le clic sur le bouton
+musicButton.addEventListener('click', () => {
+    if (audioPlayer.paused) {
+        // Si la musique est en pause, on la joue
+        audioPlayer.play();
+    } else {
+        // Si la musique est en train de jouer, on la met en pause
+        audioPlayer.pause();
+    }
+});
         // Initialisation de Phaser
         const config = {
             type: Phaser.AUTO,
-            width: 1200,
-            height: 800,
+            width: widthScreen,
+            height: heightScreen,
             parent: 'gameContainer',
+            scale: {
+        mode: Phaser.Scale.FIT, // Ajuste le canvas pour qu'il s'adapte à l'écran
+        autoCenter: Phaser.Scale.CENTER_BOTH // Centre automatiquement le canvas
+    },
             render: {
+                
         pixelArt: true // Active le mode pixelArt, utile pour les jeux en pixel art
     },
             physics: {
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 0 },
-                    debug: true,
                     roundPixels: true
                 }
             },
@@ -79,13 +161,17 @@
 
         const game = new Phaser.Game(config);
         let player;
-        let cursors;
+        let cursors=null;
         let currentPanel;
         function preload() {
+            console.log("preload called");
     // Charger le fichier JSON de la carte et l'image du tileset
     this.load.tilemapTiledJSON('map', './assets/map.json');
     this.load.image('tiles', './assets/Village.png'); // Correspond au chemin modifié dans le JSON
     this.load.spritesheet('player', './assets/player.png', { frameWidth: 16, frameHeight: 24 }); // Sprite du joueur
+    this.load.spritesheet('npc1', 'assets/PNJ1.png', { frameWidth: 16, frameHeight: 24 });
+    this.load.spritesheet('npc2', 'assets/PNJ2.png', { frameWidth: 16, frameHeight: 24 });
+    this.load.spritesheet('npc3', 'assets/PNJ3.png', { frameWidth: 16, frameHeight: 24 });
 }
 window.addEventListener('beforeunload', function() {
     const position = {
@@ -94,6 +180,23 @@ window.addEventListener('beforeunload', function() {
     };
     localStorage.setItem('playerPosition', JSON.stringify(position));
 });
+window.addEventListener('resize', () => {
+    game.scale.resize(window.innerWidth, window.innerHeight);
+});
+function isMobile() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(userAgent);
+}
+async function handleInteraction(interactingWithDoor) {
+    try {
+        if (interactingWithDoor?.url) {
+            console.log("Redirection vers :", interactingWithDoor.url);
+            window.open(interactingWithDoor.url, "_self");
+        }
+    } catch (error) {
+        console.error("Erreur lors de l'interaction :", error);
+    }
+}
 function setupMobileControls(scene) {
     const btnUp = document.getElementById('btn-up');
     const btnLeft = document.getElementById('btn-left');
@@ -130,6 +233,7 @@ function setupMobileControls(scene) {
     btnDown.addEventListener('touchend', handleTouchEnd('down'));
 }
 function create() {
+    console.log("create called");
     const map = this.make.tilemap({ key: 'map' });
     const tileset = map.addTilesetImage('Village', 'tiles'); // Assurez-vous que le nom correspond à celui du JSON
 
@@ -165,7 +269,7 @@ this.panneaux = this.physics.add.group({
 
 player.setScale(1.5);
 player.setSize(15, 15);
-    player.setCollideWorldBounds(true);
+
     this.physics.add.collider(player, groundLayer);
     this.physics.add.collider(player, niveauLayer);
     this.physics.add.collider(player, finitionLayer);
@@ -175,19 +279,73 @@ player.setSize(15, 15);
     frameRate: 4,
     repeat: -1 // Répète indéfiniment
 });
+        // Ajouter un groupe de PNJ
+        npcs = this.physics.add.group();
+
+    // Ajouter plusieurs PNJ
+    const npcData = [
+        { x: 1000, y: 1050, texture: 'npc1', npcDialogue: 'Si vous croyez au MBTI et que cette information vous intéresse, Guillaume est INFP. Cela veut dire qu\'il est idéaliste, créatif, empathique et introspectif' },
+        { x: 400, y: 300, texture: 'npc2', npcDialogue: 'Je me souviens que quand Guillaume était enfant, il était passionné par la mythologie grecque et les sciences. C\'était un bon élève, très curieux de tout.' },
+        { x: 400, y: 650, texture: 'npc3', npcDialogue: 'Guillaume a commencé à apprendre le japonais pour se donner le challenge d\'apprendre une langue difficile. Le fait qu\'il aimait les jeux vidéo était un plus. Tous les vendredis, il converse avec une amie japonaise apprenant le français. Il cherche aussi toujours de nouvelles choses à apprendre.' },
+    ];
+
+    npcData.forEach(data => {
+    const npc = npcs.create(data.x, data.y, data.texture);
+    npc.setCollideWorldBounds(true); // Empêche le PNJ de sortir des limites du monde
+    npc.direction = getRandomDirection(); // Direction initiale
+    npc.nextMoveTime = 0; // Moment où il doit changer de direction
+    npc.dialogue = data.npcDialogue || 'Je n\'ai rien à dire pour le moment.';
+    npc.setScale(1.5);
+
+    // Empêche le NPC de sortir de l'écran en vérifiant sa position
+    npc.update = (delta) => {
+        const worldBounds = this.physics.world.bounds;
+
+        // Si le NPC touche une bordure, il change de direction
+        if (npc.x <= worldBounds.x) {
+            npc.direction = 'right';
+        } else if (npc.x >= worldBounds.width - npc.width) {
+            npc.direction = 'left';
+        }
+
+        if (npc.y <= worldBounds.y) {
+            npc.direction = 'down';
+        } else if (npc.y >= worldBounds.height - npc.height) {
+            npc.direction = 'up';
+        }
+
+        // Déplace le NPC selon sa direction
+        moveNpc(npc, delta);
+    };
+
+    // Ajout des collisions
+    this.physics.add.collider(npc, player);
+    this.physics.add.collider(npc, groundLayer);
+    this.physics.add.collider(npc, niveauLayer);
+    this.physics.add.collider(npc, finitionLayer);
+    npcs.getChildren().forEach(otherNpc => {
+        if (otherNpc !== npc) {
+            this.physics.add.collider(npc, otherNpc);
+        }
+        
+    });
+});
+
+// Collision entre les PNJ et les limites du monde
+this.physics.world.setBounds(0, 0, this.cameras.main.width, this.cameras.main.height);
+
+// Interaction avec les PNJ
+this.input.keyboard.on('keydown-ENTER', () => interactWithNpc(this));
+btnInteraction.addEventListener('click', () => interactWithNpc(this));
 const mapWidth = map.widthInPixels;
     const mapHeight = map.heightInPixels;
 
-    console.log("Dimensions de la carte :", mapWidth, mapHeight);
-
     // Définir les limites de la caméra et du monde
     if (isMobile()) {
-        console.log("Mode mobile : la caméra suit sur les deux axes");
         this.cameras.main.setBounds(-1000, -1000, mapWidth*3, mapHeight*3);
         this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
         this.cameras.main.startFollow(player, true, 1, 1); // Suit X et Y
     } else {
-        console.log("Mode PC : la caméra suit uniquement sur Y");
         this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
         this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
         this.cameras.main.startFollow(player, true, 1, 1); // Suit uniquement Y
@@ -207,9 +365,27 @@ this.anims.create({
     frameRate: 4,
     repeat: -1 // Répète indéfiniment
 });
+this.anims.create({
+    key: 'npc1-walk',
+    frames: this.anims.generateFrameNumbers('npc1', { start: 8, end: 11 }),
+    frameRate: 4,
+    repeat: -1
+});
+
+this.anims.create({
+    key: 'npc2-walk',
+    frames: this.anims.generateFrameNumbers('npc2', { start: 8, end: 11 }),
+    frameRate: 4,
+    repeat: -1
+});
+this.anims.create({
+    key: 'npc3-walk',
+    frames: this.anims.generateFrameNumbers('npc3', { start: 8, end: 11 }),
+    frameRate: 4,
+    repeat: -1
+});
 
 map.getObjectLayer('Interaction').objects.forEach((object, index) => {
-    console.log(`Objet ${index} - Nom: ${object.name}, Coordonnées: (${object.x}, ${object.y})`);
     
     if (object.name === 'Panneau') {
         // Créer un sprite invisible pour gérer la détection
@@ -218,11 +394,10 @@ map.getObjectLayer('Interaction').objects.forEach((object, index) => {
         panneau.setScale(1.8);
 
         // Rechercher dynamiquement la propriété de message
+        const telechargementProperty = object.properties.find(prop => prop.name === 'telechargement')?.value || false;
         const messageProperty = object.properties.find(prop => prop.name.startsWith('message'));
         panneau.message = messageProperty ? messageProperty.value : 'Aucun message';
-        
-        console.log(`Panneau détecté - Message: ${panneau.message}`);
-
+        panneau.telechargement = telechargementProperty;
         panneau.lisible = object.properties.find(prop => prop.name === 'interaction')?.value || false;
         panneau.setVisible(false);
     }
@@ -234,83 +409,110 @@ map.getObjectLayer('Interaction').objects.forEach((object, index) => {
         // Rechercher dynamiquement la propriété de message
         const pageProperty = object.properties.find(prop => prop.name.startsWith('page'));
         porte.page = pageProperty ? pageProperty.value : 'Aucun message';
-        
-        console.log(`porte détecté - Message: ${porte.message}`);
-
         porte.url = object.properties.find(prop => prop.name === 'passage')?.value || false;
         porte.setVisible(false);
     }
 });
 this.physics.add.overlap(player, this.portes, (player, porte) => {
-        if (cursors.up.isDown && porte.url) {
-            // Rediriger vers l'URL associée
-            window.location.href = porte.page;
+    if (porte && ((cursors?.up?.isDown || this.mobileControls?.up) && porte.url)) {
+        console.log("Interaction avec une porte détectée. URL :", porte.url);
+        if(porte.page=="aProposDeMoi.html") {
+            const targetX = porte.getData('targetX');
+            const targetY = porte.getData('targetY');
+            localStorage.setItem('playerPosition', JSON.stringify({ Tx: targetX, Ty: targetY }));
         }
-    });
+        // Redirige vers l'URL associée
+        window.location.href = porte.page;
+    } else {
+        console.log("Aucune interaction valide détectée ou porte sans URL.");
+    }
+});
 // Ajoutez un écouteur d'événements pour la touche 'entrée'
-this.input.keyboard.on('keydown-ENTER', () => {
+btnInteraction.addEventListener('click', () => interactionAvecPanneau.call(this));
+
+this.input.keyboard.on('keydown-ENTER', () => interactionAvecPanneau.call(this));
+    function interactionAvecPanneau(){
     let panneauProche = null;
 
     this.panneaux.getChildren().forEach((panneau) => {
         const distance = Phaser.Math.Distance.Between(player.x, player.y, panneau.x, panneau.y);
         if (distance < 100) { // Ajustez la distance selon vos besoins
             panneauProche = panneau;
-            console.log("distance:"+distance);
         }
     });
 
     if (panneauProche && panneauProche.lisible) {
-        displayMessage(this, panneauProche.message); // Passez la scène comme paramètre
+        if (panneauProche.telechargement) {
+            // Télécharge le CV
+            const cvUrl = './assets/GUILLAUME_PADAN_CV.pdf'; // Chemin vers votre CV
+            const link = document.createElement('a');
+            link.href = cvUrl;
+            link.download = 'GUILLAUME_PADAN_CV.pdf'; // Nom du fichier téléchargé
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            // Affiche un message si le panneau n'est pas un téléchargeur
+            displayMessage(this, panneauProche.message);
+        }
     } else {
         console.log('Aucun panneau lisible trouvé ou trop loin');
     }
-});
+}
     this.portes.children.each((porte) => {
         if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), porte.getBounds())) {
             nearDoor = true;
-            // Afficher une indication d'interaction (facultatif)
-            console.log("Appuyez sur la touche Haut pour entrer.");
         }
     });            
 
 const mobileControls = document.getElementById('mobile-controls');
 if (isMobile()) {
-        setupMobileControls(this);
-        document.getElementById('mobile-controls').style.display = 'block'; // Affiche les boutons tactiles
-    } else {
-        cursors = this.input.keyboard.createCursorKeys(); // Configure les touches du clavier
-        document.getElementById('mobile-controls').style.display = 'none'; // Cache les boutons tactiles sur PC
+    setupMobileControls(this);
+    if (!localStorage.getItem('accueilMobileDisplayed')) {
+        document.getElementById('accueilMobile').style.display = 'block';
+        localStorage.setItem('accueilMobileDisplayed', 'true');
     }
+    document.getElementById('mobile-controls').style.display = 'block'; // Affiche les boutons tactiles
+    document.getElementById('music-icon').style.display = 'none';
+    document.getElementById('infoBox').style.display = 'none';
+} else {
+    cursors = this.input.keyboard.createCursorKeys(); // Initialise les contrôles clavier
+    document.getElementById('mobile-controls').style.display = 'none'; // Cache les boutons tactiles
+    document.getElementById('music-icon').style.display = 'block';
+    document.getElementById('infoBox').style.display = 'block';
+}
     // Vérifier si le joueur est près de la porte
+    console.log("Initialisation terminée : cursors =", cursors);
 
 }
-function update() {
+function update(time, delta) {
     let nearDoor = false; // Réinitialise à chaque frame
     let interactingWithDoor = null;
-
+    if (cursors && cursors.up.isDown) {
+    console.log("Flèche haut pressée sur clavier");
+}
     // Interaction avec une porte si proche et flèche "haut" activée
-    if (nearDoor && cursors.up.isDown && interactingWithDoor?.url) {
-        console.log("Entrer dans la porte :", interactingWithDoor.url);
-        window.location.href = interactingWithDoor.url; // Redirection vers l'URL de la porte
-        return; // Évite d'exécuter d'autres logiques pendant l'interaction
+    if (nearDoor && (cursors?.up.isDown || mobileControls?.up)) {
+        handleInteraction(interactingWithDoor);
     }
 
     // Logique de mouvement
     player.setVelocity(0); // Réinitialise la vitesse du joueur
 
     // Vérifie les contrôles tactiles en priorité
-    if (isMobile() && this.mobileControls) {
-        if (this.mobileControls.up) player.setVelocityY(-160);
-        if (this.mobileControls.down) player.setVelocityY(160);
-        if (this.mobileControls.left) player.setVelocityX(-160);
-        if (this.mobileControls.right) player.setVelocityX(160);
-    } else if (cursors) {
-        // Si aucun contrôle tactile actif, utilise les touches clavier
-        if (cursors.left.isDown) player.setVelocityX(-160);
-        if (cursors.right.isDown) player.setVelocityX(160);
-        if (cursors.up.isDown) player.setVelocityY(-160);
-        if (cursors.down.isDown) player.setVelocityY(160);
-    }
+    if (cursors) {
+    if (cursors.left?.isDown) player.setVelocityX(-160);
+    if (cursors.right?.isDown) player.setVelocityX(160);
+    if (cursors.up?.isDown) player.setVelocityY(-160);
+    if (cursors.down?.isDown) player.setVelocityY(160);
+}
+
+if (isMobile() && this.mobileControls) {
+    if (this.mobileControls.up) player.setVelocityY(-160);
+    if (this.mobileControls.down) player.setVelocityY(160);
+    if (this.mobileControls.left) player.setVelocityX(-160);
+    if (this.mobileControls.right) player.setVelocityX(160);
+}
 
     // Gère les animations
     if (player.body.velocity.x < 0) {
@@ -325,10 +527,17 @@ function update() {
     } else {
         player.anims.play('idle', true);
     }
+    npcs.getChildren().forEach(npc => {
+        if (time > npc.nextMoveTime) {
+            npc.direction = getRandomDirection();
+            npc.nextMoveTime = time + Phaser.Math.Between(500, 2000);
+        }
+
+        moveNpc(npc, delta);
+    });
 }
 
-        function displayMessage(scene, message) {
-    console.log(message);
+    function displayMessage(scene, message) {
     const uiLayer = scene.add.container(scene.cameras.main.width / 2, scene.cameras.main.height / 2);
 
     // Créer un texte temporaire pour mesurer la taille du message
@@ -375,9 +584,110 @@ function update() {
     // Détruire le texte temporaire après utilisation
     tempText.destroy();
 }
-function isMobile() {
-        return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+function closeWindow() {
+    document.getElementById('accueilMobile').style.display='none';
+}
+function moveNpc(npc, delta) {
+    const speed = 30;
+    const directions = {
+        up: { x: 0, y: -1 },
+        down: { x: 0, y: 1 },
+        left: { x: -1, y: 0 },
+        right: { x: 1, y: 0 },
+    };
+
+    if (npc.direction && directions[npc.direction]) {
+        npc.setVelocityX(directions[npc.direction].x * speed);
+        npc.setVelocityY(directions[npc.direction].y * speed);
+        npc.anims.play(`${npc.texture.key}-walk`, true);
     }
+    if (npc.direction === 'left') {
+            npc.scaleX = -1.5; // Inverse horizontalement
+            npc.body.setOffset(npc.body.width / 2, 4);
+
+        } else if (npc.direction === 'right') {
+            npc.scaleX = 1.5; // Remet l'orientation normale
+            npc.body.setOffset(npc.body.width / 8, 4);
+        }
+}
+
+// Obtenir une direction aléatoire
+function getRandomDirection() {
+    const directions = ['up', 'down', 'left', 'right'];
+    return directions[Phaser.Math.Between(0, directions.length - 1)];
+}
+function interactWithNpc(scene) {
+    let nearestNpc = null;
+    let shortestDistance = 50; // Distance maximale pour interagir
+
+    npcs.getChildren().forEach(npc => {
+        const distance = Phaser.Math.Distance.Between(player.x, player.y, npc.x, npc.y);
+        if (distance < shortestDistance) {
+            nearestNpc = npc;
+            shortestDistance = distance;
+        }
+    });
+
+    if (nearestNpc) {
+        displayNpcDialogue(scene, nearestNpc.dialogue);
+    } else {
+        console.log("Aucun PNJ proche.");
+    }
+}
+
+// Afficher la boîte de dialogue
+function displayNpcDialogue(scene, dialogue) {
+    // Calculer la position centrale du canvas
+    const centerX = scene.cameras.main.width / 2;
+    const centerY = scene.cameras.main.height / 2;
+
+    // Créer un conteneur pour la boîte de dialogue
+    const uiLayer = scene.add.container(centerX, centerY);
+
+    // Créer un texte temporaire pour mesurer ses dimensions
+    const tempText = scene.add.text(0, 0, dialogue, {
+        font: '16px Pixelmax',
+        fill: '#000000',
+        wordWrap: { width: scene.cameras.main.width - 40 }, // Ajustez la largeur
+    }).setVisible(false);
+
+    // Obtenir les dimensions du texte et ajuster la taille du cadre
+    const textWidth = tempText.width;
+    const textHeight = tempText.height;
+    const padding = 20;
+    const rectWidth = Math.min(textWidth + padding * 2, scene.cameras.main.width - 20); // Limiter à la largeur du canvas
+    const rectHeight = textHeight + padding * 2;
+
+    // Créer le graphique pour la boîte
+    const graphics = scene.add.graphics();
+    graphics.lineStyle(4, 0x000000, 1); // Bordure noire
+    graphics.fillStyle(0xffffff, 1); // Fond blanc
+    graphics.fillRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight);
+    graphics.strokeRect(-rectWidth / 2, -rectHeight / 2, rectWidth, rectHeight);
+
+    // Ajouter le graphique au conteneur
+    uiLayer.add(graphics);
+
+    // Ajouter le texte à la boîte
+    const text = scene.add.text(0, 0, dialogue, {
+        font: '16px Pixelmax',
+        fill: '#000000',
+        wordWrap: { width: rectWidth - padding }, // Ajustez la largeur du texte
+    }).setOrigin(0.5);
+
+    uiLayer.add(text);
+
+    // Fixer la boîte pour qu'elle reste centrée
+    uiLayer.setScrollFactor(0);
+
+    // Détruire la boîte après 5 secondes
+    scene.time.delayedCall(5000, () => {
+        uiLayer.destroy();
+    });
+
+    // Détruire le texte temporaire
+    tempText.destroy();
+}
     </script>
 </body>
 </html>

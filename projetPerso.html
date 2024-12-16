@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Téléchargement de notebooks</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+        }
+
+        .container {
+            text-align: left;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #4a4a4a;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 15px;
+        }
+
+        .notebook-link {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: #007bff;
+            margin-bottom: 5px;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .notebook-link:hover {
+            color: #0056b3;
+            transform: translateX(5px);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .back-button a {
+            text-decoration: none;
+        }
+
+        .back-button button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .back-button button:hover {
+            background-color: #0056b3;
+        }
+
+        .description {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="back-button">
+        <a href="index.html">
+            <button>Retour</button>
+        </a>
+    </div>
+    <div class="container">
+        <h1>Télécharger quelques une de mes projets personnels</h1>
+        <p>Mes projets ne sont en général pas très long et sont plus réalisés pour l'apport qu'il me procure, ici le japonais.</p>
+        <ul>
+            <li>
+                <a class="notebook-link" href="notebooks/perso_recherchePhrases.ipynb" download>Tri phrases</a>
+                <p class="description">Une difficulté du japonais est l'apprentissage des kanjis. Même en connaissant une bonne partie des kanjis usuels, vous tombez toujours régulièrement sur des kanjis inconnus. Parfois il s'agira d'un kanji rare que vous n'allez plus retrouver avant un certain temps durant lequel vous allez l'oublier. Parfois, vous en avez beaucoup trop et il vous est impossible de tous les mémoriser d'un coup. Ce notebook est lié à un dataset de 2.000.000 de phrases et me permet de me concentrer sur quelques kanjis à la fois. Je renseigne les kanjis connus, indique les kanjis sur lesquels je souhaite me concentrer et m'autorise une marge de kanjis inconnus. Le notebook me fera ensuite une liste de phrases dans lequelles se trouve au moins 1 kanji parmi ceux sur lesquels je souhaite me concentrer et dans lesquelles il n'y a que des kanjis connus à l'exception de la marge (si celle-ci est à 2, alors entre 0 et 2 kanjis me seront inconnus).</p>
+            </li>
+            <li>
+                <a class="notebook-link" href="notebooks/anki_verbes.py" download>Webscrapping verbes</a>
+                <p class="description">Egalement lié à l'apprentissage du japonais, un certain nombre de verbes sont des verbes composés, dans lesquels le deuxième verbe modifie le premier. Le National Institute for Japanese Language and Linguistics a un site dédicacé à ceux-ci, qui a récemment été mise à jour, me poussant à recommencer ce programme depuis le départ. Si vous ne maîtriser pas la programmation, je déconseille de double-cliquer sur le fichier une fois télécharger, où le programme va se lancer, ouvrant une page Firefox si vous possédez le navigateur. Rien de dangereux et cela atteste du fonctionnement du programme, mais cela peut surprendre. Vous pouvez l'ouvrir sur un bloc-note pour regarder le code.</p>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

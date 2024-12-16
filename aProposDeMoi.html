@@ -35,32 +35,144 @@
         canvas {
             border: 1px solid #000; /* Optionnel : ajoute une bordure autour du canvas */
         }
-        #infoBox {
-    margin-top: 10px; /* Espace entre le canvas et le div */
-    text-align: center; /* Centrer le texte ou le contenu */
-    padding: 10px; /* Espacement interne */
-    background-color: #62b6b6; /* Couleur de fond */
-    border: 1px solid #30756a; /* Bordure */
-}
         @font-face {
     font-family: 'Pixelmax';
     src: url('fonts/Pixelmax.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
+.library-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 500px;
+    background: #f9f9f9;
+    border: 2px solid #333;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+.popup-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.popup-left {
+    flex: 1;
+    padding: 10px;
+}
+
+.popup-right {
+    flex: 2;
+    padding: 10px;
+}
+.prev-item {
+    position: absolute;
+    left: 10px; /* Positionnement depuis le bord gauche */
+    top: 50%; /* Centré verticalement */
+    transform: translateY(-50%); /* Ajustement pour centrer parfaitement */
+    z-index: 100; /* Assurez-vous qu'il est au-dessus du contenu */
+}
+
+.next-item {
+    position: absolute;
+    right: 10px; /* Positionnement depuis le bord droit */
+    top: 50%; /* Centré verticalement */
+    transform: translateY(-50%); /* Ajustement pour centrer parfaitement */
+    z-index: 100; /* Assurez-vous qu'il est au-dessus du contenu */
+}
+
+.close-library {
+    position: absolute;
+    top: 10px; /* En haut du conteneur */
+    right: 10px; /* À droite du conteneur */
+    z-index: 100; /* Assurez-vous qu'il est au-dessus du contenu */
+}
     </style>
 </head>
 <body>
+    <div id="film" class="library-container" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-left">
+                <img id="film-image" src="./assetsLibrairie/films/film-defaut.jpg" alt="Film image" style="width: 100%; height: auto;">
+            </div>
+            <div class="popup-right">
+                <h2 id="film-title">Mes films préférés</h2>
+                <p id="film-description">Pour être honnête, j'ai des goûts de vieux...</p>
+            </div>
+        </div>
+        <button id="prev-film" class='prev-item' style="position: absolute; left: 10px;">⬅️</button>
+        <button id="next-film" class='next-item' style="position: absolute; right: 10px;">➡️</button>
+        <button class='close-library' onclick="closeLibrary('film')">Fermer</button>
+    </div>
+    
+    <div id="musique" class="library-container" style="display: none;">
+        <h2>Certaines de mes musiques préférées</h2>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4EkI6fnbEe5veeowQD9t4N?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <button class='close-library' onclick="closeLibrary('musique')">Fermer</button>
+    </div>
+    
+    <div id="livre" class="library-container" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-left">
+                <img id="livre-image" src="./assetsLibrairie/livres/book.jpg" alt="livre image" style="width: 100%; height: auto;">
+            </div>
+            <div class="popup-right">
+                <h2 id="livre-title">Mes romans favoris</h2>
+                <p id="livre-description">Mes goûts en terme de romans sont plutôt classiques.</p>
+            </div>
+        </div>
+        <button id="prev-livre" class='prev-item' style="position: absolute; left: 10px;">⬅️</button>
+        <button id="next-livre" class='next-item' style="position: absolute; right: 10px;">➡️</button>
+        <button class='close-library' onclick="closeLibrary('livre')">Fermer</button>
+    </div>
+    
+    <div id="jeu" class="library-container" style="display: none;">
+        <div class="popup-content">
+            <div class="popup-left">
+                <img id="jeu-image" src="./assetsLibrairie/jeux/ps2.jpg" alt="jeu image" style="width: 100%; height: auto;">
+            </div>
+            <div class="popup-right">
+                <h2 id="jeu-title">Mes jeux vidéo favoris</h2>
+                <p id="jeu-description">Bien qu'ayant grandi avec des types de jeux divers (RPG, RTS, plate-forme, simulation...), j'ai aujourd'hui plus tendance à me diriger vers les jeux japonais</p>
+            </div>
+        </div>
+        <button id="prev-jeu" class='prev-item' style="position: absolute; left: 10px;">⬅️</button>
+        <button id="next-jeu" class='next-item' style="position: absolute; right: 10px;">➡️</button>
+        <button class='close-library' onclick="closeLibrary('jeu')">Fermer</button>
+    </div>
     <div>
+        <div id="mobile-controls" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: none; z-index: 10;">
+            <button id="btn-music" style="width: 50px; height: 50px; margin-bottom: 5px;">x</button>
+            <button id="btn-up" style="width: 50px; height: 50px; margin-bottom: 5px;">⬆️</button>
+            <button id="interaction" style="width: 50px; height: 50px; margin-bottom: 5px;">?</button>
+            <br>
+            <button id="btn-left" style="width: 50px; height: 50px; margin-top: 5px;">⬅️</button>
+            <button id="btn-down" style="width: 50px; height: 50px; margin-top: 5px;">⬇️</button>
+            <button id="btn-right" style="width: 50px; height: 50px; margin-top: 5px;">➡️</button>
+        </div>
     <div id="gameContainer"></div>
-    <div id="infoBox">Utiliser les touches directionnelles pour se déplacer et ENTREE pour interagir avec les panneaux.</div></div>
+    </div>
 
-    <script>
-        // Initialisation de Phaser
+<script>
+const btnInteraction = document.getElementById('interaction');
+let widthScreen=720;
+let heightScreen=720;
+if(isMobile()) {
+    widthScreen=window.innerWidth;
+    heightScreen=window.innerHeight;
+} else {
+    widthScreen=720;
+    heightScreen=720;
+}
         const config = {
             type: Phaser.AUTO,
-            width: 720,
-            height: 720,
+            width: widthScreen,
+            height: heightScreen,
             parent: 'gameContainer',
             render: {
         pixelArt: true // Active le mode pixelArt, utile pour les jeux en pixel art
@@ -69,7 +181,6 @@
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 0 },
-                    debug: true,
                     roundPixels: true
                 }
             },
@@ -85,19 +196,54 @@
         let cursors;
         let currentPanel;
         function preload() {
+            console.log("preload called");
     // Charger le fichier JSON de la carte et l'image du tileset
     this.load.tilemapTiledJSON('map', 'assets/interieur.json');
     this.load.image('tiles', 'assets/interieur.png'); // Correspond au chemin modifié dans le JSON
     this.load.spritesheet('player', 'assets/player.png', { frameWidth: 16, frameHeight: 24 }); // Sprite du joueur
 }
-window.addEventListener('beforeunload', function() {
-    const position = {
-        x: player.x,
-        y: player.y
-    };
-    localStorage.setItem('playerPosition', JSON.stringify(position));
-});
+
+
+
+function setupMobileControls(scene) {
+    
+    const btnUp = document.getElementById('btn-up');
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
+    const btnDown = document.getElementById('btn-down');
+
+    function handleTouchStart(direction) {
+        return (e) => {
+            e.preventDefault(); // Empêche le comportement par défaut
+            scene.mobileControls[direction] = true;
+            console.log(`${direction} pressed`); // Ajoutez un log pour confirmer
+        };
+    }
+
+    function handleTouchEnd(direction) {
+        return (e) => {
+            e.preventDefault(); // Empêche le comportement par défaut
+            scene.mobileControls[direction] = false;
+            console.log(`${direction} released`); // Ajoutez un log pour confirmer
+        };
+    }
+    scene.mobileControls = { up: false, down: false, left: false, right: false };
+    // Ajoutez les écouteurs d'événements aux boutons tactiles
+    btnUp.addEventListener('touchstart', handleTouchStart('up'));
+    btnUp.addEventListener('touchend', handleTouchEnd('up'));
+
+    btnLeft.addEventListener('touchstart', handleTouchStart('left'));
+    btnLeft.addEventListener('touchend', handleTouchEnd('left'));
+
+    btnRight.addEventListener('touchstart', handleTouchStart('right'));
+    btnRight.addEventListener('touchend', handleTouchEnd('right'));
+
+    btnDown.addEventListener('touchstart', handleTouchStart('down'));
+    btnDown.addEventListener('touchend', handleTouchEnd('down'));
+}
+
 function create() {
+    console.log("create called");
     const map = this.make.tilemap({ key: 'map' });
     const tileset = map.addTilesetImage('libassetpack-tiled', 'tiles');
 
@@ -117,7 +263,7 @@ niveauLayer.setCollisionFromCollisionGroup(true, true);
 Items1Layer.setCollisionFromCollisionGroup(true, true);
 Items2Layer.setCollisionFromCollisionGroup(true, true);
 Items3Layer.setCollisionFromCollisionGroup(true, true);
-this.panneaux = this.physics.add.group({
+this.contents = this.physics.add.group({
         allowGravity: false,
         immovable: true
     });
@@ -125,19 +271,11 @@ this.panneaux = this.physics.add.group({
         allowGravity: false,
         immovable: true
     });
-    const savedPosition = localStorage.getItem('playerPosition');
-    if (savedPosition) {
-        const position = JSON.parse(savedPosition);
-        player = this.physics.add.sprite(position.x, position.y, 'player');
-    } else {
-        // Position par défaut si aucune position n'est sauvegardée
-        player = this.physics.add.sprite(650, 1220, 'player');
-    }
 
-    // Autres configurations du joueur, si nécessaire
-    player.setCollideWorldBounds(true);
+        player = this.physics.add.sprite(350, 670, 'player');
 
-player.setScale(1.5);
+
+player.setScale(2.5);
 player.setSize(15, 15);
     player.setCollideWorldBounds(true);
     this.physics.add.collider(player, groundLayer);
@@ -173,24 +311,51 @@ this.anims.create({
     frameRate: 4,
     repeat: -1 // Répète indéfiniment
 });
+const mapWidth = map.widthInPixels;
+    const mapHeight = map.heightInPixels;
 
+    console.log("Dimensions de la carte :", mapWidth, mapHeight);
+
+    // Définir les limites de la caméra et du monde
+    if (isMobile()) {
+
+        this.cameras.main.setBounds(-1000, -1000, mapWidth*3, mapHeight*3);
+        this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
+        this.cameras.main.startFollow(player, true, 1, 1); // Suit X et Y
+    } else {
+        console.log("Mode PC : la caméra suit uniquement sur Y");
+        this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
+        this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
+        this.cameras.main.startFollow(player, true, 1, 1); // Suit uniquement Y
+    }
 map.getObjectLayer('Bibliotheque').objects.forEach((object, index) => {
     console.log(`Objet ${index} - Nom: ${object.name}, Coordonnées: (${object.x}, ${object.y})`);
     
-    if (object.name === 'Panneau') {
+    if (object.name === 'content') {
         // Créer un sprite invisible pour gérer la détection
-        const panneau = this.panneaux.create(object.x, object.y - object.height, null).setOrigin(0, -0.3);
-        panneau.setSize(object.width, object.height);
-        panneau.setScale(1.8);
+        const content = this.contents.create(object.x, object.y - object.height, null).setOrigin(-0.5, -2);
+        content.setSize(object.width, object.height);
+    
 
         // Rechercher dynamiquement la propriété de message
-        const messageProperty = object.properties.find(prop => prop.name.startsWith('message'));
-        panneau.message = messageProperty ? messageProperty.value : 'Aucun message';
+        const messageProperty = object.properties.find(prop => prop.name.startsWith('type'));
+        content.message = messageProperty ? messageProperty.value : 'Aucun message';
         
-        console.log(`Panneau détecté - Message: ${panneau.message}`);
+        console.log(`content détecté - Message: ${content.message}`);
 
-        panneau.lisible = object.properties.find(prop => prop.name === 'interaction')?.value || false;
-        panneau.setVisible(false);
+        content.lisible = object.properties.find(prop => prop.name === 'interaction')?.value || false;
+        content.setVisible(false);
+        const graphics = this.add.graphics();
+        graphics.fillStyle(0x00ff00, 0.2); // Vert avec transparence
+        graphics.fillRect(
+            content.x,
+            content.y+50,
+            60,
+            50
+        );
+
+        // Associer les graphiques au contenu
+        content.graphics = graphics;
     }
     if (object.name === 'Porte') {
         // Créer un sprite invisible pour gérer la détection
@@ -214,40 +379,46 @@ this.physics.add.overlap(player, this.portes, (player, porte) => {
         }
     });
 // Ajoutez un écouteur d'événements pour la touche 'entrée'
-this.input.keyboard.on('keydown-ENTER', () => {
-    let panneauProche = null;
+btnInteraction.addEventListener('click', () => interactionAvecBibliotheque.call(this));
 
-    this.panneaux.getChildren().forEach((panneau) => {
-        const distance = Phaser.Math.Distance.Between(player.x, player.y, panneau.x, panneau.y);
-        if (distance < 100) { // Ajustez la distance selon vos besoins
-            panneauProche = panneau;
-            console.log("distance:"+distance);
+this.input.keyboard.on('keydown-ENTER', () => interactionAvecBibliotheque.call(this));
+    
+function interactionAvecBibliotheque() {
+    let contentProche = null;
+
+    this.physics.overlap(player, this.contents, (player, content) => {
+        if (content.lisible) {
+            contentProche = content; // Contenu trouvé via l'overlap
         }
     });
 
-    if (panneauProche && panneauProche.lisible) {
-        displayMessage(this, panneauProche.message); // Passez la scène comme paramètre
+    if (contentProche) {
+        const targetDivId = contentProche.message;
+        hideAllLibraryDivs(); // Masque tous les divs de bibliothèque
+        document.getElementById(targetDivId).style.display = 'block'; // Affiche le div correspondant
+        console.log(`Affichage du contenu : ${targetDivId}`);
     } else {
-        console.log('Aucun panneau lisible trouvé ou trop loin');
+        console.log('Aucun content lisible trouvé ou trop loin');
     }
-});
-            
-
+}
             // Configurer les contrôles du clavier
             cursors = this.input.keyboard.createCursorKeys();
     // Vérifier si le joueur est près de la porte
-    this.portes.children.each((porte) => {
-        if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), porte.getBounds())) {
-            nearDoor = true;
-            // Afficher une indication d'interaction (facultatif)
-            console.log("Appuyez sur la touche Haut pour entrer.");
-        }
-    });
+
+
+const mobileControls = document.getElementById('mobile-controls');
+    if (isMobile()) {
+        setupMobileControls(this);
+        document.getElementById('mobile-controls').style.display = 'block'; // Affiche les boutons tactiles
+    } else {
+        cursors = this.input.keyboard.createCursorKeys(); // Configure les touches du clavier
+        document.getElementById('mobile-controls').style.display = 'none'; // Cache les boutons tactiles sur PC
+    }
 }
+
+
 function update() {
     let nearDoor = false;
-
-
 
     if (nearDoor && cursors.up.isDown) {
         // Logique d'interaction avec la porte
@@ -255,44 +426,36 @@ function update() {
         
         // Rediriger vers une autre page
         window.location.href = porte.url; // Remplacez par l'URL souhaitée
-    } else {
-        // Logique de mouvement par défaut
-        if (cursors.left.isDown) {
-        player.setVelocityX(-160);
-        player.setVelocityY(0);
-        player.anims.play('walk', true);
-        player.scaleX = -1.5;
+    }
 
-        // Ajuster l'offset de la hitbox pour le déplacement à gauche
-        player.body.setOffset(player.body.width / 2, 4); // Ajuster le décalage vertical
-    } else if (cursors.right.isDown) {
-        player.setVelocityX(160);
-        player.setVelocityY(0);
-        player.anims.play('walk', true);
-        player.scaleX = 1.5;
+    player.setVelocity(0); // Réinitialise la vitesse du joueur
 
-        // Réinitialiser l'offset de la hitbox pour le déplacement à droite
-        player.body.setOffset(0, 4); // Ajuster le décalage vertical
-    } else if (cursors.down.isDown) {
-        player.setVelocityX(0);
-        player.setVelocityY(160);
+    // Priorité aux contrôles tactiles
+    if (isMobile() && this.mobileControls) {
+        if (this.mobileControls.up) player.setVelocityY(-160);
+        if (this.mobileControls.down) player.setVelocityY(160);
+        if (this.mobileControls.left) player.setVelocityX(-160);
+        if (this.mobileControls.right) player.setVelocityX(160);
+    } else if (cursors) {
+        // Contrôles clavier en mode desktop
+        if (cursors.left.isDown) player.setVelocityX(-160);
+        if (cursors.right.isDown) player.setVelocityX(160);
+        if (cursors.up.isDown) player.setVelocityY(-160);
+        if (cursors.down.isDown) player.setVelocityY(160);
+    }
+
+    // Gestion des animations
+    if (player.body.velocity.x < 0) {
         player.anims.play('walk', true);
-        player.scaleX = 1.5;
-        player.body.setOffset(0, 4); // Ajuster le décalage vertical
-    } else if (cursors.up.isDown) {
-        player.setVelocityX(0);
-        player.setVelocityY(-160);
+        player.scaleX = -2.5;
+        player.body.setOffset(player.body.width / 2, 4);
+    } else if (player.body.velocity.x > 0 || player.body.velocity.y !== 0) {
         player.anims.play('walk', true);
-        player.scaleX = 1.5;
-        
-        player.body.setOffset(0, 4); // Ajuster le décalage vertical
+        player.scaleX = 2.5;
+        player.body.setOffset(player.body.width / 10, 4);
     } else {
-        // Réinitialiser l'offset de la hitbox lorsque le personnage s'arrête
-        player.setVelocityX(0);
-        player.setVelocityY(0);
         player.anims.play('idle', true);
-        player.setOrigin(0, 0.5);
-    }}
+    }
         }
 
         function displayMessage(scene, message) {
@@ -343,6 +506,138 @@ function update() {
     // Détruire le texte temporaire après utilisation
     tempText.destroy();
 }
+function isMobile() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(userAgent);
+    return isMobile;
+}
+function closeLibrary(types) {
+    document.getElementById(types).style.display='none';
+}
+function hideAllLibraryDivs() {
+    const libraryDivs = document.querySelectorAll('.library-container');
+    libraryDivs.forEach((div) => {
+        div.style.display = 'none';
+    });
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+const filmsData = [
+    {
+        image: './assetsLibrairie/films/film-defaut.jpg',
+        title: 'Mes films préférés',
+        description: 'Pour être honnête, j\'ai des goûts de vieux...',
+    },
+    {
+        image: './assetsLibrairie/films/12-hommes-en-colere.jpg',
+        title: '12 Hommes en Colère',
+        description: '"12 hommes en colère" (1957) est un drame judiciaire centré sur un jury chargé de délibérer sur la culpabilité d\'un jeune homme accusé du meurtre de son père. Alors que 11 jurés sont prêts à le déclarer coupable, un seul, Juré n°8, exprime des doutes, refusant de décider la peine de mort sans approfondir ses doutes. À travers des discussions intenses, il pousse les autres jurés à examiner les preuves et leurs préjugés.',
+    },
+    {
+        image: './assetsLibrairie/films/minus-1.jpg',
+        title: 'Godzilla Minus 1',
+        description: 'En 1947, alors que Koichi Shikishima, un ancien kamikaze survivant, tente de reconstruire sa vie dans le Japon en ruines après la Seconde Guerre mondiale, une nouvelle menace émerge : un gigantesque monstre, Godzilla, sème la terreur et la destruction. Les autorités japonaises luttent pour trouver un moyen d\'arrêter la créature, tandis que la population, déjà fragilisée par les conséquences de la guerre, doit faire face à ce nouvel ennemi.',
+    },
+    {
+        image: './assetsLibrairie/films/to-be-or-not-to-be.jpg',
+        title: 'To Be Or Not To Be (1942)',
+        description: 'Après l\'invasion de la Pologne en 1939, un pilote de bombardier, amant d\'une actrice de théâtre populaire, Maria Tura, découvre, depuis l\'Angleterre, un réseau d\'espionnage visant à détruire la résistance polonaise. Il est envoyé en mission et va devoir travailler avec la troupe de théâtre, dont le mari de Maria Tura, l\'un des pires acteurs shakespearien.',
+    },
+];
+const livresData = [
+    {
+        image: './assetsLibrairie/livres/book.jpg',
+        title: 'Mes romans favoris',
+        description: 'Mes goûts en terme de romans sont plutôt classiques',
+    },
+    {
+        image: './assetsLibrairie/livres/au-bord-de-leau.jpg',
+        title: 'Au Bord de l\'Eau',
+        description: 'Ce roman chinois du XIVème siècle relate la rencontre et les exploits de cent huit bandits, révoltés contre la corruption du gouvernement et des hauts fonctionnaires de la cour de l\'empereur.',
+    },
+    {
+        image: './assetsLibrairie/livres/crime-et-chatiment.jpg',
+        title: 'Crime et Châtiment',
+        description: 'Crime et Châtiment suit l\'angoisse mentale et les dilemmes moraux de Rodion Raskolnikov, un ancien étudiant appauvri de Saint-Pétersbourg qui projette de tuer une prêteuse sur gages sans scrupules. Il pense qu\'avec l\'argent, il pourrait se libérer de la pauvreté et accomplir de grandes actions, et cherche à se convaincre que certains crimes sont justifiables s\'ils sont commis pour éliminer les obstacles aux objectifs supérieurs des hommes « extraordinaires ». Mais une fois l\'acte accompli, il se retrouve en proie à la confusion, à la paranoïa et au dégoût. Ses justifications théoriques perdent tout leur pouvoir alors qu\'il se débat dans la culpabilité et l\'horreur et qu\'il est confronté aux conséquences internes et externes de son acte par l\'arrivée d\'un grand détective qui resserre son étau de plus en plus autour de lui.',
+    },
+    {
+        image: './assetsLibrairie/livres/lile-mysterieuse.jpg',
+        title: 'L\'Île Mystérieuse',
+        description: 'Roman de mon enfance, il relate les aventures de cinq naufragés et un chien sur une île déserte. Partant de rien, il vont, grâce à la présence de l\'ingénieur Cyrus Smith, pouvoir retrouver le confort perdu, par la création de forge, four à poterie ainsi même qu\'un télégraphe.',
+    },
+];
+const jeuxData = [
+    {
+        image: './assetsLibrairie/jeux/ps2.jpg',
+        title: 'Mes jeux vidéo favoris',
+        description: 'Bien qu\'ayant grandi avec des types de jeux divers (RPG, RTS, plate-forme, simulation...), j\'ai aujourd\'hui plus tendance à me diriger vers les jeux japonais.',
+    },
+    {
+        image: './assetsLibrairie/jeux/suikoden2.jpg',
+        title: 'La série Suikoden',
+        description: 'Inspiré du roman chinois Au Bord de l\'Eau, chaque opus relate l\'histoire de 108 personnages, se retrouvant autour d\'un fort, pour lutter contre le pouvoir corrompu en place. Les jeux alternent entre histoire et recrutement et tournent autour d\'une mythologie autour de runes magiques.',
+    },
+    {
+        image: './assetsLibrairie/jeux/valkyria-chronicles.jpg',
+        title: 'La série Valkyria Chronicles',
+        description: 'Dans une inspiration fantasy de la Seconde Guerre Mondiale, nommé ici Seconde Guerre d\'Europa, chaque opus présente un escouade ayant eu une importance durant cette guerre que ce soit en y mettant fin, en luttant contre les menaces internes, en agissant comme escouade suicide composé de criminels de guerre en quête de pardon ou en réalisant une attaque éclair sur la capitale ennemi en vue de le déstabiliser.',
+    },
+    {
+        image: './assetsLibrairie/jeux/ace-attorney.jpg',
+        title: 'La série des Ace Attorney',
+        description: 'Dans cette série, vous incarnez un avocat de la défense, cherchant à protéger des clients que tout accuse, dans une justice alternative fonctionnant sur une présemption de culpabilité - une accusé est coupable tant qu\'il n\'a pas été prouvé innocent. Alternant enquête et procès, ces histoires sont remplies de twist ainsi que de personnages haut en couleur.',
+    },
+];
+
+let currentFilmIndex = 0;
+let currentLivreIndex = 0;
+let currentJeuIndex = 0;
+
+function updateFilmDisplay() {
+    const film = filmsData[currentFilmIndex];
+    document.getElementById('film-image').src = film.image;
+    document.getElementById('film-title').innerText = film.title;
+    document.getElementById('film-description').innerText = film.description;
+}
+function updateLivreDisplay() {
+    const livre = livresData[currentLivreIndex];
+    document.getElementById('livre-image').src = livre.image;
+    document.getElementById('livre-title').innerText = livre.title;
+    document.getElementById('livre-description').innerText = livre.description;
+}
+function updateJeuDisplay() {
+    const jeu = jeuxData[currentJeuIndex];
+    document.getElementById('jeu-image').src = jeu.image;
+    document.getElementById('jeu-title').innerText = jeu.title;
+    document.getElementById('jeu-description').innerText = jeu.description;
+}
+document.getElementById('prev-film').addEventListener('click', () => {
+    currentFilmIndex = (currentFilmIndex - 1 + filmsData.length) % filmsData.length;
+    updateFilmDisplay();
+});
+document.getElementById('prev-livre').addEventListener('click', () => {
+    currentLivreIndex = (currentLivreIndex - 1 + livresData.length) % livresData.length;
+    updateLivreDisplay();
+});
+document.getElementById('prev-jeu').addEventListener('click', () => {
+    currentJeuIndex = (currentJeuIndex - 1 + jeuxData.length) % jeuxData.length;
+    updateJeuDisplay();
+});
+
+document.getElementById('next-film').addEventListener('click', () => {
+    currentFilmIndex = (currentFilmIndex + 1) % filmsData.length;
+    updateFilmDisplay();
+});
+document.getElementById('next-livre').addEventListener('click', () => {
+    currentLivreIndex = (currentLivreIndex + 1) % livresData.length;
+    updateLivreDisplay();
+});
+document.getElementById('next-jeu').addEventListener('click', () => {
+    currentJeuIndex = (currentJeuIndex + 1) % jeuxData.length;
+    updateJeuDisplay();
+});
+
     </script>
 </body>
 </html>

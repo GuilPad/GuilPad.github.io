@@ -214,71 +214,91 @@
          "objects":[
                 {
                  "class":"",
-                 "height":83,
+                 "height":50,
                  "id":1,
-                 "name":"",
+                 "name":"content",
                  "properties":[
                         {
-                         "name":"films",
+                         "name":"interaction",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"film"
                         }],
                  "rotation":0,
                  "visible":true,
-                 "width":59,
-                 "x":66,
-                 "y":170
+                 "width":60,
+                 "x":64,
+                 "y":215
                 }, 
                 {
                  "class":"",
-                 "height":96,
+                 "height":50,
                  "id":2,
-                 "name":"",
+                 "name":"content",
                  "properties":[
                         {
-                         "name":"livres",
+                         "name":"interaction",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"jeu"
                         }],
                  "rotation":0,
                  "visible":true,
-                 "width":46,
-                 "x":172,
-                 "y":165
+                 "width":60,
+                 "x":164,
+                 "y":215
                 }, 
                 {
                  "class":"",
-                 "height":97,
+                 "height":50,
                  "id":3,
-                 "name":"",
+                 "name":"content",
                  "properties":[
                         {
-                         "name":"jeux",
+                         "name":"interaction",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"livre"
                         }],
                  "rotation":0,
                  "visible":true,
-                 "width":53,
-                 "x":69,
-                 "y":402
+                 "width":60,
+                 "x":64,
+                 "y":452
                 }, 
                 {
                  "class":"",
-                 "height":104,
+                 "height":50,
                  "id":4,
-                 "name":"",
+                 "name":"content",
                  "properties":[
                         {
-                         "name":"musique",
+                         "name":"interaction",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"musique"
                         }],
                  "rotation":0,
                  "visible":true,
-                 "width":58,
-                 "x":162,
-                 "y":393
+                 "width":60,
+                 "x":164,
+                 "y":452
                 }, 
                 {
                  "class":"",
@@ -286,6 +306,16 @@
                  "id":7,
                  "name":"Porte",
                  "properties":[
+                        {
+                         "name":"TargetX",
+                         "type":"string",
+                         "value":"32"
+                        }, 
+                        {
+                         "name":"TargetY",
+                         "type":"string",
+                         "value":"1094"
+                        }, 
                         {
                          "name":"page",
                          "type":"string",
