@@ -1,19 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
 </html><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeu RPG Phaser</title>
+    <title>Mes goûts personnels</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
     <style>
         body {
@@ -420,7 +410,7 @@ const mobileControls = document.getElementById('mobile-controls');
 function update() {
     let nearDoor = false;
 
-    if (nearDoor && cursors.up.isDown) {
+    if (nearDoor && (cursors.up.isDown|| mobileControls?.down)) {
         // Logique d'interaction avec la porte
         console.log("Entrer dans la porte");
         
