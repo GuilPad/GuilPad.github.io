@@ -138,8 +138,8 @@ musicButton.addEventListener('click', () => {
             height: heightScreen,
             parent: 'gameContainer',
             scale: {
-        mode: Phaser.Scale.FIT, 
-        autoCenter: Phaser.Scale.CENTER_BOTH 
+        mode: Phaser.Scale.FIT, // Ajuste le canvas pour qu'il s'adapte à l'écran
+        autoCenter: Phaser.Scale.CENTER_BOTH // Centre automatiquement le canvas
     },
             render: {
                 
@@ -149,7 +149,6 @@ musicButton.addEventListener('click', () => {
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 0 },
-                    fps: 30,
                     roundPixels: true
                 }
             },
@@ -400,6 +399,7 @@ map.getObjectLayer('Interaction').objects.forEach((object, index) => {
         panneau.message = messageProperty ? messageProperty.value : 'Aucun message';
         panneau.telechargement = telechargementProperty;
         panneau.lisible = object.properties.find(prop => prop.name === 'interaction')?.value || false;
+        panneau.panneauID=object.properties.find(prop => prop.name.startsWith('message'));
         panneau.setVisible(false);
     }
     if (object.name === 'Porte') {
@@ -454,7 +454,13 @@ this.input.keyboard.on('keydown-ENTER', () => interactionAvecPanneau.call(this))
             document.body.removeChild(link);
         } else {
             // Affiche un message si le panneau n'est pas un téléchargeur
-            displayMessage(this, panneauProche.message);
+            if(panneauProche.panneauID.name==="message11"){
+                displayTime=15000;
+            }
+            else{
+                displayTime=5000;
+            }
+            displayMessage(this, panneauProche.message, displayTime);
         }
     } else {
         console.log('Aucun panneau lisible trouvé ou trop loin');
@@ -538,9 +544,8 @@ if (isMobile() && this.mobileControls) {
     });
 }
 
-    function displayMessage(scene, message) {
+    function displayMessage(scene, message, dureeDisplay) {
     const uiLayer = scene.add.container(scene.cameras.main.width / 2, scene.cameras.main.height / 2);
-
     // Créer un texte temporaire pour mesurer la taille du message
     const tempText = scene.add.text(0, 0, message, {
         font: '16px Pixelmax',
@@ -576,9 +581,7 @@ if (isMobile() && this.mobileControls) {
 
     // Fixer le conteneur à la caméra pour qu'il reste centré à l'écran
     uiLayer.setScrollFactor(0);
-
-    // Masquer après un délai
-    scene.time.delayedCall(3000, () => {
+    scene.time.delayedCall(dureeDisplay, () => {
         uiLayer.destroy();
     });
 

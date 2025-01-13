@@ -395,6 +395,28 @@
                  "width":32,
                  "x":32,
                  "y":68
+                }, 
+                {
+                 "class":"",
+                 "height":32,
+                 "id":20,
+                 "name":"Panneau",
+                 "properties":[
+                        {
+                         "name":"interaction",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"message11",
+                         "type":"string",
+                         "value":"Cahier des charges:\n- R\u00e9alisation de la map\n- Animation des personnages (d\u00e9placement et animation de surplace, effet miroir lors de changement de direction)\n- D\u00e9placement al\u00e9atoire des personnages non jouables\n- Collisions entre personnages et \u00e9l\u00e9ments du d\u00e9cor\n- D\u00e9placement de la cam\u00e9ra suivant le d\u00e9placement du personnage\n- Ouverture de bo\u00eetes de dialogues lors d'interaction avec des panneaux ou des personnages (cr\u00e9ation d'une zone d'interaction pour chaque entit\u00e9)\n- Entr\u00e9e dans une nouvelle page web lorsque l'on rentre dans une maison\n- Retour dans la map en conservant les m\u00eames coordonn\u00e9es qu'\u00e0 l'entr\u00e9e\n- Ajout d'une musique d'ambiance qui loop, silencieuse par d\u00e9faut\n- R\u00e9alisation de pages web classiques avec importation d'images, de vid\u00e9os, synchronisation avec une playlist Spotify\n- Transformation du site vers un format mobile pour le Responsive Design (seul un probl\u00e8me persiste pour les t\u00e9l\u00e9phones avec un cache plein - je recommande pour le moment de vider le cache avant de tester)"
+                        }],
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":672,
+                 "y":992
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -536,7 +558,7 @@
             0, 0, 0, 0, 0, 0, 0, 7096, 0, 845, 841, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 619, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             382, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 287, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 287, 0, 0,
             1258, 1259, 1260, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             6841, 6841, 6841, 0, 0, 0, 0, 0, 0, 1095, 1096, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 494, 0, 0, 0, 0, 0, 0, 1095, 1096, 0, 0, 0, 0,
             6841, 6841, 6841, 0, 0, 0, 0, 0, 0, 1114, 1115, 0, 0, 0, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1114, 1115, 0, 0, 0, 0,
@@ -556,7 +578,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":20,
+ "nextobjectid":21,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.2",
