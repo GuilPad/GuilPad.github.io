@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oeuvres Blender et Unreal Engine 5</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #8793b9 0%, #346291 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .back-button a {
+            text-decoration: none;
+        }
+
+        .back-button button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .back-button button:hover {
+            background-color: #0056b3;
+        }
+
+        .page {
+            width: min(1100px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 84px 0 48px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            color: #1f2937;
+        }
+
+        .page-header p {
+            margin: 0 auto;
+            max-width: 680px;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        .carousel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            width: 100%;
+            height: clamp(320px, 58vh, 620px);
+            position: relative;
+            background-color: #222;
+            border-radius: 18px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.22);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-item img, .carousel-item video {
+            max-width: 92%;
+            max-height: 92%;
+            object-fit: contain;
+            border-radius: 10px;
+            cursor: zoom-in;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .carousel-button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .carousel-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            background-color: rgba(0, 0, 0, 0.82);
+            z-index: 2000;
+        }
+
+        .lightbox.open {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: min(1200px, 94vw);
+            max-height: 88vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-content img,
+        .lightbox-content video {
+            max-width: 100%;
+            max-height: 88vh;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 999px;
+            background-color: rgba(255, 255, 255, 0.92);
+            color: #111827;
+            cursor: pointer;
+            font-size: 30px;
+            line-height: 1;
+        }
+
+        .lightbox-close:hover {
+            background-color: #ffffff;
+        }
+
+        @media (max-width: 640px) {
+            .page {
+                width: min(100% - 24px, 1100px);
+                padding-top: 76px;
+            }
+
+            .carousel {
+                height: 360px;
+                border-radius: 14px;
+            }
+
+            .carousel-button {
+                padding: 8px 14px;
+            }
+
+            .lightbox {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="back-button">
+        <button type="button" onclick="goBack()">Retour</button>
+    </div>
+
+    <main class="page">
+        <header class="page-header">
+            <h1>Créations 3D</h1>
+            <p>Quelques réalisations et expérimentations visuelles autour de Blender et Unreal Engine 5.</p>
+        </header>
+
+        <div class="carousel">
+            <div class="carousel-track">
+                <div class="carousel-item">
+                    <img src="./carrousel/bonbon.png" alt="Image 1">
+                </div>
+                <div class="carousel-item">
+                    <video src="./carrousel/character.mp4" controls></video>
+                </div>
+                <div class="carousel-item">
+                    <img src="./carrousel/champignon.png" alt="Image 2">
+                </div>
+                <div class="carousel-item">
+                    <video src="./carrousel/donut.mp4" controls></video>
+                </div>
+                <div class="carousel-item">
+                    <img src="./carrousel/room.png" alt="Image 3">
+                </div>
+                <div class="carousel-item">
+                    <video src="./carrousel/ruine.mp4" controls></video>
+                </div>
+                <div class="carousel-item">
+                    <video src="./carrousel/ue5-1.mp4" controls></video>
+                </div>
+                <div class="carousel-item">
+                    <video src="./carrousel/ue5-2.mp4" controls></video>
+                </div>
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-button prev">&#10094;</button>
+                <button class="carousel-button next">&#10095;</button>
+            </div>
+        </div>
+    </main>
+
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+        <button class="lightbox-close" type="button" aria-label="Fermer la pop-up">&times;</button>
+        <div class="lightbox-content" id="lightbox-content"></div>
+    </div>
+
+    <script>
+        const track = document.querySelector('.carousel-track');
+        const items = Array.from(track.children);
+        const nextButton = document.querySelector('.carousel-button.next');
+        const prevButton = document.querySelector('.carousel-button.prev');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxContent = document.getElementById('lightbox-content');
+        const lightboxClose = document.querySelector('.lightbox-close');
+
+        function goBack() {
+            const fallbackUrl = 'accueil.html';
+            const ref = document.referrer;
+
+            if (ref) {
+                try {
+                    const baseDir = window.location.href.replace(/[^/]*$/, '');
+                    if (ref.startsWith(baseDir)) {
+                        window.location.href = ref;
+                        return;
+                    }
+
+                    const refUrl = new URL(ref);
+                    if (refUrl.origin === window.location.origin) {
+                        window.location.href = ref;
+                        return;
+                    }
+                } catch (e) {
+                }
+            }
+
+            window.location.href = fallbackUrl;
+        }
+
+        let currentIndex = 0;
+
+        function updateCarousel() {
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        nextButton.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % items.length;
+            updateCarousel();
+        });
+
+        prevButton.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + items.length) % items.length;
+            updateCarousel();
+        });
+
+        document.querySelectorAll('.carousel-item img, .carousel-item video').forEach((media) => {
+            media.addEventListener('click', () => {
+                const popupMedia = media.cloneNode(true);
+
+                lightboxContent.innerHTML = '';
+                lightboxContent.appendChild(popupMedia);
+                lightbox.classList.add('open');
+                lightbox.setAttribute('aria-hidden', 'false');
+
+                if (popupMedia.tagName === 'VIDEO') {
+                    popupMedia.controls = true;
+                    popupMedia.play();
+                }
+            });
+        });
+
+        function closeLightbox() {
+            lightbox.classList.remove('open');
+            lightbox.setAttribute('aria-hidden', 'true');
+            lightboxContent.innerHTML = '';
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+
+        lightbox.addEventListener('click', (event) => {
+            if (event.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && lightbox.classList.contains('open')) {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>

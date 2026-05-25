@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <style>
+        :root {
+            --bg: #f6f7fb;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --muted: #475569;
+            --border: rgba(15, 23, 42, 0.10);
+            --accent: #2563eb;
+            --accent-2: #0ea5e9;
+            --shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+        }
+
+        @font-face {
+            font-family: 'Pixelmax';
+            src: url('fonts/Pixelmax.ttf') format('truetype');
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(1200px 600px at 20% 10%, rgba(14, 165, 233, 0.15), transparent 55%),
+                        radial-gradient(900px 500px at 80% 20%, rgba(37, 99, 235, 0.18), transparent 60%),
+                        var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, 'Pixelmax', sans-serif;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: min(1040px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 28px 0 48px;
+        }
+
+        header {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            padding: 18px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 26px;
+            letter-spacing: -0.02em;
+        }
+
+        .brand p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+            user-select: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(37, 99, 235, 0.35);
+            box-shadow: 0 10px 22px rgba(15, 23, 42, 0.10);
+        }
+
+        .btn.primary {
+            border-color: rgba(37, 99, 235, 0.35);
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #fff;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        nav a:hover {
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        main {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 12px;
+        }
+
+        .card {
+            grid-column: span 12;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface);
+            padding: 14px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .card h2 {
+            margin: 0 0 6px 0;
+            font-size: 16px;
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .card a {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+        }
+
+        .card:hover {
+            border-color: rgba(37, 99, 235, 0.25);
+        }
+
+        footer {
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (min-width: 720px) {
+            header { padding: 20px; }
+            .brand h1 { font-size: 30px; }
+            main { gap: 16px; }
+            .card { padding: 16px; }
+            .card h2 { font-size: 17px; }
+            .card p { font-size: 14px; }
+
+            .card.span-6 { grid-column: span 6; }
+            .card.span-4 { grid-column: span 4; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="top">
+                <div class="brand">
+                    <h1>Portfolio</h1>
+                    <p>Choisis un format de navigation, ou accède directement aux pages.</p>
+                </div>
+                <div class="actions">
+                    <a class="btn primary" href="index.html">Format jeu</a>
+                </div>
+            </div>
+
+            <nav aria-label="Navigation">
+                <a href="presentationWebDev.html">Présentation Web Dev</a>
+                <a href="projetPerso.html">Projets perso</a>
+                <a href="projetWagon.html">Projets Le Wagon</a>
+                <a href="notebooks.html">Notebooks</a>
+                <a href="divers.html">Divers</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="grid" aria-label="Pages du portfolio">
+                <article class="card span-6">
+                    <a href="presentationWebDev.html">
+                        <h2>Présentation Web Dev</h2>
+                        <p>Une vue d’ensemble de mon parcours et de mon profil développeur.</p>
+                    </a>
+                </article>
+
+                <article class="card span-6">
+                    <a href="projetPerso.html">
+                        <h2>Projets perso</h2>
+                        <p>Projets réalisés en autonomie, idées, prototypes et itérations.</p>
+                    </a>
+                </article>
+
+                <article class="card span-4">
+                    <a href="projetWagon.html">
+                        <h2>Projets Le Wagon</h2>
+                        <p>Projets réalisés pendant ma formation, seul ou en équipe.</p>
+                    </a>
+                </article>
+
+                <article class="card span-4">
+                    <a href="notebooks.html">
+                        <h2>Notebooks</h2>
+                        <p>Expériences, notes, explorations et démos.</p>
+                    </a>
+                </article>
+
+                <article class="card span-4">
+                    <a href="divers.html">
+                        <h2>Divers</h2>
+                        <p>Autres contenus, ressources et liens complémentaires.</p>
+                    </a>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

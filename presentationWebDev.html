@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vidéo Démonstration Web Développement</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #4c669f, #3b5998, #192f6a);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            margin: 20px 0;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+        }
+
+        .back-button a {
+            text-decoration: none;
+        }
+
+        .back-button button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 1em;
+        }
+
+        .back-button button:hover {
+            background-color: #0056b3;
+        }
+
+        .container {
+            text-align: left;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            margin-top: 60px;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+        
+        p {
+            font-size: 1.2em;
+            line-height: 1.5;
+            margin-top: 10px;
+            text-indent: 2em; /* Ajoute une tabulation en début de paragraphe */
+        }
+
+        @media (max-width: 768px) {
+            .back-button button {
+                font-size: 0.9em;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="back-button">
+        <button type="button" onclick="goBack()">Retour</button>
+    </div>
+    <header>
+        <h1>Projet de Fin de Formation Développement Web- Jishosaurus</h1>
+    </header>
+    <div class="container">
+        <video controls>
+            <source src="video/jishosaurus.mp4" type="video/mp4">
+        </video>
+        <p>Dans cette vidéo, je présente le projet que j'ai présenté face à un jury, pour obtenir mon titre de développeur web.</p>
+        <p>Le nom Jishosaurus est un mot-valise entre 辞書 (jisho) signifiant dictionnaire et le mot thésaurus.</p>
+        <p>Le site a été réalisé pendant mon temps libre, alors que j'effectuais un stage, craignant que celui-ci ne soit pas perçu comme suffisant car ne pouvant travailler sur du back-end. Une des évolutions possibles serait d'améliorer l'aspect esthétique avec l'aide d'un webdesigner. Malgré tout, le site est tout à fait fonctionnel, bien que plus en ligne.</p>
+    </div>
+
+    <script>
+        function goBack() {
+            const fallbackUrl = 'accueil.html';
+            const ref = document.referrer;
+
+            if (ref) {
+                try {
+                    const baseDir = window.location.href.replace(/[^/]*$/, '');
+                    if (ref.startsWith(baseDir)) {
+                        window.location.href = ref;
+                        return;
+                    }
+
+                    const refUrl = new URL(ref);
+                    if (refUrl.origin === window.location.origin) {
+                        window.location.href = ref;
+                        return;
+                    }
+                } catch (e) {
+                }
+            }
+
+            window.location.href = fallbackUrl;
+        }
+    </script>
+</body>
+</html>
